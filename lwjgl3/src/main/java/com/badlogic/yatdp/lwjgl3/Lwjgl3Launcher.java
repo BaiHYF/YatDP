@@ -2,7 +2,10 @@ package com.badlogic.yatdp.lwjgl3;
 
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Window;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3WindowAdapter;
 import com.badlogic.yatdp.Main;
+import org.lwjgl.glfw.GLFW;
 
 /** Launches the desktop (LWJGL3) application. */
 public class Lwjgl3Launcher {
@@ -32,6 +35,18 @@ public class Lwjgl3Launcher {
         //// You can change these files; they are in lwjgl3/src/main/resources/ .
         //// They can also be loaded from the root of assets/ .
         configuration.setWindowIcon("libgdx128.png", "libgdx64.png", "libgdx32.png", "libgdx16.png");
+
+        configuration.setWindowedMode(150, 150);
+        configuration.setWindowPosition(25, 850);   // TO BE SET IN CONFIG
+        configuration.setResizable(true);
+        configuration.setTransparentFramebuffer(true);
+        configuration.setWindowListener(new Lwjgl3WindowAdapter() {
+            @Override
+            public void created(Lwjgl3Window window) {
+                // 初始化时启用置顶，之后可通过配置文件来实现是否启用置顶的功能
+                GLFW.glfwSetWindowAttrib(window.getWindowHandle(), GLFW.GLFW_FLOATING, GLFW.GLFW_TRUE);
+            }
+        });
         return configuration;
     }
 }
