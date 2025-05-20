@@ -5,7 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.utils.Logger;
 
-/** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
+/** 可以简单地认为这个类是整个程序地入口. */
 public class Main extends ApplicationAdapter {
     Logger log = new Logger("YatDP_CORE", Logger.DEBUG);
 
@@ -27,6 +27,7 @@ public class Main extends ApplicationAdapter {
         log.debug("Rendering...");
 
         float delta = Gdx.graphics.getDeltaTime();
+        // Clear the screen
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         Gdx.gl.glClearColor(0f, 0f, 0f, 0f);
 
@@ -35,7 +36,6 @@ public class Main extends ApplicationAdapter {
 
     @Override
     public void resize(int width, int height) {
-        // TODO: Implement
         pet.setCamera();
 
         log.info("Resized.");

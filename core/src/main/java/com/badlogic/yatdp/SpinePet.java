@@ -16,18 +16,28 @@ import com.esotericsoftware.spine.utils.TwoColorPolygonBatch;
  * <p>{@code SpinePet} 类旨在对 Spine 模型的加载、渲染、动画控制等功能进行封装，
  * 提供简洁且统一的接口供桌宠应用程序调用。通过此类，可以轻松集成和管理桌面宠物的外观及行为。</p>
  *
- * <p>主要功能包括：</p>
+ * <h3>主要功能</h3>
  * <ul>
- *     <li>加载 Spine 模型资源</li>
- *     <li>播放、暂停、停止 Spine 动画</li>
+ *     <li>加载 Spine 模型资源（支持 `.skel` 二进制格式）</li>
  *     <li>更新模型状态并渲染到桌面</li>
- *     <li>提供交互接口以响应用户输入或系统事件</li>
+ *     <li>提供资源释放接口防止内存泄漏</li>
  * </ul>
  *
- * @ see com.badlogic.yatdp.SpinePet#initializeModel(String)
- * @ see com.badlogic.yatdp.SpinePet#playAnimation(String)
- * @ see com.badlogic.yatdp.SpinePet#update(float)
- * @ see com.badlogic.yatdp.SpinePet#render()
+ * <h3>典型用法</h3>
+ * <pre>
+ * // 初始化
+ * SpinePet pet = new SpinePet("models", "cat");
+ *
+ * // 在 render() 方法中更新和渲染
+ * pet.render(Gdx.graphics.getDeltaTime());
+ *
+ * // 程序退出时释放资源
+ * pet.dispose();
+ * </pre>
+ *
+ * @see #SpinePet(String, String)
+ * @see #render(float)
+ * @see #dispose()
  */
 public class SpinePet {
     Logger logger = new Logger("SpinePet", Logger.DEBUG);
@@ -45,6 +55,15 @@ public class SpinePet {
     String defaultAnimationName = "Relax";
     float modelScale = 0.3f;
 
+    /**
+     * 构造函数，初始化 Spine 模型和渲染组件
+     *
+     * @param modelDirPath 模型文件所在目录路径（相对于 assets 目录）
+     * @param modelFileName 模型文件名（不带扩展名）,需保持Spine模型的`.atlas`, `.skel`, `.png` 名称一致
+     *
+     * @see #loadSpineModel(String, String)
+     * @see #configureSkeleton()
+     */
     public SpinePet(String modelDirPath, String modelFileName) {
         Gdx.app.setLogLevel(Logger.INFO);
 
@@ -60,6 +79,11 @@ public class SpinePet {
         logger.info("Initialized.");
     }
 
+    /**
+     * 渲染方法，执行动画更新和模型绘制
+     *
+     * @param delta 时间增量，用于动画帧率控制
+     */
     public void render(float delta) {
         logger.debug("Rendering ...");
 
@@ -75,6 +99,16 @@ public class SpinePet {
         batch.begin();
         skeletonRenderer.draw(batch, skeleton);
         batch.end();
+    }
+
+    /**
+     * 释放所有原生资源
+     *
+     * <p>在程序退出时调用以避免内存泄漏</p>
+     */
+    public void dispose() {
+        atlas.dispose();
+        batch.dispose();
     }
 
     public void setCamera() {
@@ -120,9 +154,4 @@ public class SpinePet {
         animationState.setAnimation(0, defaultAnimationName, true);
     }
 
-
-    public void dispose() {
-        atlas.dispose();
-        batch.dispose();
-    }
 }
