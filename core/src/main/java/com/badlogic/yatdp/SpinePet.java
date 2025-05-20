@@ -58,9 +58,8 @@ public class SpinePet {
     /**
      * 构造函数，初始化 Spine 模型和渲染组件
      *
-     * @param modelDirPath 模型文件所在目录路径（相对于 assets 目录）
+     * @param modelDirPath  模型文件所在目录路径（相对于 assets 目录）
      * @param modelFileName 模型文件名（不带扩展名）,需保持Spine模型的`.atlas`, `.skel`, `.png` 名称一致
-     *
      * @see #loadSpineModel(String, String)
      * @see #configureSkeleton()
      */
@@ -127,8 +126,6 @@ public class SpinePet {
     }
 
     private void configureSkeleton() {
-
-
         // 更新骨骼世界变换以获取最新边界
         skeleton.updateWorldTransform();
 
