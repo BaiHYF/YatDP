@@ -1,0 +1,128 @@
+package com.badlogic.yatdp;
+
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.FloatArray;
+import com.badlogic.gdx.utils.Logger;
+import com.esotericsoftware.spine.*;
+import com.esotericsoftware.spine.utils.TwoColorPolygonBatch;
+
+/**
+ * 封装桌面宠物中 Spine 模型与动画的相关操作。
+ *
+ * <p>{@code SpinePet} 类旨在对 Spine 模型的加载、渲染、动画控制等功能进行封装，
+ * 提供简洁且统一的接口供桌宠应用程序调用。通过此类，可以轻松集成和管理桌面宠物的外观及行为。</p>
+ *
+ * <p>主要功能包括：</p>
+ * <ul>
+ *     <li>加载 Spine 模型资源</li>
+ *     <li>播放、暂停、停止 Spine 动画</li>
+ *     <li>更新模型状态并渲染到桌面</li>
+ *     <li>提供交互接口以响应用户输入或系统事件</li>
+ * </ul>
+ *
+ * @ see com.badlogic.yatdp.SpinePet#initializeModel(String)
+ * @ see com.badlogic.yatdp.SpinePet#playAnimation(String)
+ * @ see com.badlogic.yatdp.SpinePet#update(float)
+ * @ see com.badlogic.yatdp.SpinePet#render()
+ */
+public class SpinePet {
+    Logger logger = new Logger("SpinePet", Logger.DEBUG);
+    OrthographicCamera camera;
+    TwoColorPolygonBatch batch;
+    Skeleton skeleton;
+    SkeletonData skeletonData;
+    SkeletonBinary skeletonBinary;
+    SkeletonJson skeletonJson;
+    SkeletonRenderer skeletonRenderer;
+    TextureAtlas atlas;
+    AnimationStateData animationStateData;
+    AnimationState animationState;
+
+    String defaultAnimationName = "Relax";
+    float modelScale = 0.3f;
+
+    public SpinePet(String modelDirPath, String modelFileName) {
+        Gdx.app.setLogLevel(Logger.INFO);
+
+        camera = new OrthographicCamera();
+        batch = new TwoColorPolygonBatch();
+        skeletonRenderer = new SkeletonRenderer();
+        skeletonRenderer.setPremultipliedAlpha(true);
+
+        loadSpineModel(modelDirPath, modelFileName);
+        configureSkeleton();
+        initAnimation();
+
+        logger.info("Initialized.");
+    }
+
+    public void render(float delta) {
+        logger.debug("Rendering ...");
+
+        // 更新各种状态
+        animationState.update(delta);
+        animationState.apply(skeleton);
+        skeleton.update(delta);
+        skeleton.updateWorldTransform();
+        camera.update();
+        batch.setProjectionMatrix(camera.combined);
+
+        // 渲染
+        batch.begin();
+        skeletonRenderer.draw(batch, skeleton);
+        batch.end();
+    }
+
+    public void setCamera() {
+        camera.setToOrtho(false);
+    }
+
+    private void loadSpineModel(String modelDirPath, String modelFileName) {
+        atlas = new TextureAtlas(Gdx.files.internal(modelDirPath + "/" + modelFileName + ".atlas"));
+        skeletonBinary = new SkeletonBinary(atlas);
+        // `skeletonBinary` 的设置需在 `readSkeletonData()` 之前
+        skeletonBinary.setScale(modelScale);
+
+        skeletonData = skeletonBinary.readSkeletonData(Gdx.files.internal(modelDirPath + "/" + modelFileName + ".skel"));
+        skeleton = new Skeleton(skeletonData);
+        logger.info("Spine model loaded.");
+    }
+
+    private void configureSkeleton() {
+
+
+        // 更新骨骼世界变换以获取最新边界
+        skeleton.updateWorldTransform();
+
+        Vector2 min = new Vector2();
+        Vector2 max = new Vector2();
+        FloatArray polygon = new FloatArray();
+
+        // 获取边界数据
+        skeleton.getBounds(min, max, polygon);
+
+        // 计算模型尺寸（考虑缩放）
+//        float modelWidth = max.x - min.x;
+//        float modelHeight = max.y - min.y;
+
+        // 屏幕适配计算
+        float screenWidth = Gdx.graphics.getWidth();
+        skeleton.setX(screenWidth / 2); // 水平居中
+    }
+
+    private void initAnimation() {
+        animationStateData = new AnimationStateData(skeletonData);
+        animationState = new AnimationState(animationStateData);
+        animationState.setAnimation(0, defaultAnimationName, true);
+    }
+
+
+    public void dispose() {
+        atlas.dispose();
+        batch.dispose();
+    }
+}

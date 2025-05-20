@@ -37,7 +37,8 @@ public class Lwjgl3Launcher {
         configuration.setWindowIcon("libgdx128.png", "libgdx64.png", "libgdx32.png", "libgdx16.png");
 
         configuration.setWindowedMode(150, 150);
-        configuration.setWindowPosition(25, 850);   // TO BE SET IN CONFIG
+        configuration.setWindowPosition(0, 50);   // TO BE SET IN CONFIG
+        configuration.setDecorated(false);
         configuration.setResizable(true);
         configuration.setTransparentFramebuffer(true);
         configuration.setWindowListener(new Lwjgl3WindowAdapter() {
