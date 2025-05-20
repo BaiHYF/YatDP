@@ -9,6 +9,15 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Logger;
 
 /* About the InputAdapter, see: https://libgdx.com/wiki/input/event-handling */
+
+/**
+ * YatInputAdapter 类用于处理窗口拖拽相关的输入事件，继承自 LibGDX 的 InputAdapter。
+ * 该类通过监听触摸事件实现窗口的拖拽移动功能，并记录相关日志信息。
+ * <p>
+ * 关于 LibGDX 的 InputAdapter，请参考：<a href="https://libgdx.com/wiki/input/event-handling">...</a>
+ *
+ * @author baiheyufei <BaiHeYuFei@outlook.com>
+ */
 public class YatInputAdapter extends InputAdapter {
 
     public boolean isDragging = false;

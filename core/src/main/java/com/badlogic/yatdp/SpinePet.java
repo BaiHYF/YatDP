@@ -38,6 +38,8 @@ import com.esotericsoftware.spine.utils.TwoColorPolygonBatch;
  * @see #SpinePet(String, String)
  * @see #render(float)
  * @see #dispose()
+ *
+ * @author baiheyufei <BaiHeYuFei@outlook.com>
  */
 public class SpinePet {
     Logger logger = new Logger("SpinePet", Logger.DEBUG);

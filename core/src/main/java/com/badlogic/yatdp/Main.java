@@ -7,7 +7,11 @@ import com.badlogic.gdx.utils.Logger;
 
 
 /**
- * 可以简单地认为这个类是整个程序地入口.
+ * Main 类是 YatDP 程序的核心入口，继承自 LibGDX 的 `ApplicationAdapter`。
+ * 负责初始化应用核心组件、处理渲染循环及资源管理。
+ *
+ * @author baiheyufei <BaiHeYuFei@outlook.com>
+ * @version 1.0
  */
 public class Main extends ApplicationAdapter {
     Logger log = new Logger("YatDP_CORE", Logger.DEBUG);
