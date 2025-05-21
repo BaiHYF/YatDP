@@ -21,7 +21,11 @@ import com.badlogic.gdx.utils.Logger;
 public class YatInputAdapter extends InputAdapter {
 
     public boolean isDragging = false;
+    public boolean isAppMinimized = false;
+
     public Vector2 mousePosition = new Vector2();
+    public Vector2 currentWindowPosition = new Vector2();
+
     Logger logger = new Logger("YatInputAdapter", Logger.DEBUG);
 
 
@@ -37,6 +41,19 @@ public class YatInputAdapter extends InputAdapter {
         if (button == Input.Buttons.LEFT) {
             isDragging = true;
             mousePosition.set(x, y);
+            return true;
+        }
+        if (button == Input.Buttons.RIGHT) {
+            if (!isAppMinimized) {
+                Lwjgl3Graphics graphics = (Lwjgl3Graphics) Gdx.graphics;
+                Lwjgl3Window window = graphics.getWindow();
+                currentWindowPosition.set(window.getPositionX(), window.getPositionY());
+                shrinkWindow();
+                isAppMinimized = true;
+            } else {
+                restoreWindow();
+                isAppMinimized = false;
+            }
             return true;
         }
         return false;
@@ -63,10 +80,35 @@ public class YatInputAdapter extends InputAdapter {
             // Get window handle then reset the window position according to the delta
             Lwjgl3Graphics graphics = (Lwjgl3Graphics) Gdx.graphics;
             Lwjgl3Window window = graphics.getWindow();
+
+            currentWindowPosition.set(window.getPositionX() + delta.x, window.getPositionY() + delta.y);
             window.setPosition((int) (window.getPositionX() + delta.x), (int) (window.getPositionY() + delta.y));
+
 
             return true;
         }
         return false;
+    }
+
+    /// Shrink the Window to 32x32
+    private void shrinkWindow() {
+        logger.info("Window is shrinking to 32x32.");
+
+        Lwjgl3Graphics graphics = (Lwjgl3Graphics) Gdx.graphics;
+        Lwjgl3Window window = graphics.getWindow();
+
+        int screenX = window.getPositionX();
+        int screenY = window.getPositionY();
+        Gdx.graphics.setWindowedMode(32, 32);
+        window.setPosition(screenX, screenY);
+    }
+
+    private void restoreWindow() {
+        logger.info("Window is restoring.");
+
+        Lwjgl3Graphics graphics = (Lwjgl3Graphics) Gdx.graphics;
+        Lwjgl3Window window = graphics.getWindow();
+        Gdx.graphics.setWindowedMode(150, 150);
+        window.setPosition((int) currentWindowPosition.x, (int) currentWindowPosition.y);
     }
 }

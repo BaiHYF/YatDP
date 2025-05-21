@@ -3,6 +3,8 @@ package com.badlogic.yatdp;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Logger;
 
 
@@ -21,6 +23,8 @@ public class Main extends ApplicationAdapter {
     String modelName = "build_char_002_amiya_winter#1";
     SpinePet pet;
 
+    Texture icon;   // icon texture to be drawn when app is minimized
+    SpriteBatch batchMinimized; // batch for drawing icon when app is minimized
 
     @Override
     public void create() {
@@ -35,16 +39,31 @@ public class Main extends ApplicationAdapter {
         if (!Gdx.graphics.supportsDisplayModeChange()) {
             log.error("Display mode change is not supported.");
         }
+
+        batchMinimized = new SpriteBatch();
+        icon = new Texture("icon/赤色のチューリップx128.png");
+        icon.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+
     }
 
     @Override
     public void render() {
-        float delta = Gdx.graphics.getDeltaTime();
         // Clear the screen
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         Gdx.gl.glClearColor(0f, 0f, 0f, 0f);
 
-        pet.render(delta);
+        // if the app is not minimized, render the pet
+        if (!inputAdapter.isAppMinimized) {
+            float delta = Gdx.graphics.getDeltaTime();
+            pet.render(delta);
+        } else {
+            // draw a 32x32 pixel icon in the center of the screen
+            float windowWidth = Gdx.graphics.getWidth();
+            float windowHeight = Gdx.graphics.getHeight();
+            batchMinimized.begin();
+            batchMinimized.draw(icon, 0, 0);
+            batchMinimized.end();
+        }
     }
 
     @Override
