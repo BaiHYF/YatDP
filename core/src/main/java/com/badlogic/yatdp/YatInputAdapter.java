@@ -48,7 +48,7 @@ public class YatInputAdapter extends InputAdapter {
                 Lwjgl3Graphics graphics = (Lwjgl3Graphics) Gdx.graphics;
                 Lwjgl3Window window = graphics.getWindow();
                 currentWindowPosition.set(window.getPositionX(), window.getPositionY());
-                shrinkWindow();
+                minimizeWindow();
                 isAppMinimized = true;
             } else {
                 restoreWindow();
@@ -91,7 +91,7 @@ public class YatInputAdapter extends InputAdapter {
     }
 
     /// Shrink the Window to 32x32
-    private void shrinkWindow() {
+    private void minimizeWindow() {
         logger.info("Window is shrinking to 32x32.");
 
         Lwjgl3Graphics graphics = (Lwjgl3Graphics) Gdx.graphics;

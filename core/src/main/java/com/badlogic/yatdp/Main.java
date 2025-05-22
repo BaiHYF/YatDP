@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Logger;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 
 
 /**
@@ -25,6 +26,7 @@ public class Main extends ApplicationAdapter {
 
     Texture icon;   // icon texture to be drawn when app is minimized
     SpriteBatch batchMinimized; // batch for drawing icon when app is minimized
+    FitViewport viewportMinimized; // viewport for drawing icon when app is minimized
 
     @Override
     public void create() {
@@ -41,9 +43,9 @@ public class Main extends ApplicationAdapter {
         }
 
         batchMinimized = new SpriteBatch();
-        icon = new Texture("icon/赤色のチューリップx128.png");
+        icon = new Texture("icon/coffee-cup-icon.png");
         icon.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
-
+        viewportMinimized = new FitViewport(32, 32);
     }
 
     @Override
@@ -60,8 +62,10 @@ public class Main extends ApplicationAdapter {
             // draw a 32x32 pixel icon in the center of the screen
             float windowWidth = Gdx.graphics.getWidth();
             float windowHeight = Gdx.graphics.getHeight();
+            viewportMinimized.apply();
+            batchMinimized.setProjectionMatrix(viewportMinimized.getCamera().combined);
             batchMinimized.begin();
-            batchMinimized.draw(icon, 0, 0);
+            batchMinimized.draw(icon, 0, 0, viewportMinimized.getWorldWidth(), viewportMinimized.getWorldHeight());
             batchMinimized.end();
         }
     }
@@ -69,7 +73,7 @@ public class Main extends ApplicationAdapter {
     @Override
     public void resize(int width, int height) {
         pet.setCamera();
-
+        viewportMinimized.update(width, height, true);
         log.info("Resized.");
     }
 
