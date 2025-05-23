@@ -35,11 +35,10 @@ import com.esotericsoftware.spine.utils.TwoColorPolygonBatch;
  * pet.dispose();
  * </pre>
  *
+ * @author baiheyufei <BaiHeYuFei@outlook.com>
  * @see #SpinePet(String, String)
  * @see #render(float)
  * @see #dispose()
- *
- * @author baiheyufei <BaiHeYuFei@outlook.com>
  */
 public class SpinePet {
     Logger logger = new Logger("SpinePet", Logger.DEBUG);
