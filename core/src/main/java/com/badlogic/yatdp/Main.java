@@ -3,10 +3,7 @@ package com.badlogic.yatdp;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Logger;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 
 
 /**
@@ -20,20 +17,23 @@ public class Main extends ApplicationAdapter {
     Logger log = new Logger("YatDP_CORE", Logger.DEBUG);
     YatInputAdapter inputAdapter;
 
+
+    /* Utils for drawing pet model~ */
+
+    // TODO: 添加配置文件模块，模型路径写在配置文件中，模型初始化时读取。
     String modelDirPath = "test/test_spine_model";
     String modelName = "build_char_002_amiya_winter#1";
     SpinePet pet;
 
-    Texture icon;   // icon texture to be drawn when app is minimized
-    SpriteBatch batchMinimized; // batch for drawing icon when app is minimized
-    FitViewport viewportMinimized; // viewport for drawing icon when app is minimized
+
+    /* Utils for minimizing the app~ */
+    MinIcon minIcon;
 
     @Override
     public void create() {
         Gdx.app.setLogLevel(Logger.DEBUG);
         inputAdapter = new YatInputAdapter();
         Gdx.input.setInputProcessor(inputAdapter);
-
 
         pet = new SpinePet(modelDirPath, modelName);
 
@@ -42,10 +42,7 @@ public class Main extends ApplicationAdapter {
             log.error("Display mode change is not supported.");
         }
 
-        batchMinimized = new SpriteBatch();
-        icon = new Texture("icon/coffee-cup-icon.png");
-        icon.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
-        viewportMinimized = new FitViewport(32, 32);
+        minIcon = new MinIcon();
     }
 
     @Override
@@ -59,28 +56,22 @@ public class Main extends ApplicationAdapter {
             float delta = Gdx.graphics.getDeltaTime();
             pet.render(delta);
         } else {
-            // draw a 32x32 pixel icon in the center of the screen
-            float windowWidth = Gdx.graphics.getWidth();
-            float windowHeight = Gdx.graphics.getHeight();
-            viewportMinimized.apply();
-            batchMinimized.setProjectionMatrix(viewportMinimized.getCamera().combined);
-            batchMinimized.begin();
-            batchMinimized.draw(icon, 0, 0, viewportMinimized.getWorldWidth(), viewportMinimized.getWorldHeight());
-            batchMinimized.end();
+            minIcon.render();
         }
     }
 
     @Override
     public void resize(int width, int height) {
-        pet.setCamera();
-        viewportMinimized.update(width, height, true);
-        log.info("Resized.");
+        pet.resize();
+        minIcon.resize(width, height);
+        log.info("APP Resized.");
     }
 
 
     @Override
     public void dispose() {
         pet.dispose();
-        log.info("YatDP core disposed.");
+        minIcon.dispose();
+        log.info("APP disposed.");
     }
 }

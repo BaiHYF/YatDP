@@ -112,7 +112,7 @@ public class SpinePet {
         batch.dispose();
     }
 
-    public void setCamera() {
+    public void resize() {
         camera.setToOrtho(false);
     }
 
