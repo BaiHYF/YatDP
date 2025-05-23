@@ -26,8 +26,6 @@ public class YatInputAdapter extends InputAdapter {
     public Vector2 mousePosition = new Vector2();
     public Vector2 currentWindowPosition = new Vector2();
 
-    private static final float CLICK_TOLERANCE = 1f;
-
     Logger logger = new Logger("YatInputAdapter", Logger.DEBUG);
 
     private SpinePet petInstance;
