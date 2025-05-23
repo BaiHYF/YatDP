@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.Logger;
 import com.esotericsoftware.spine.*;
@@ -47,13 +48,15 @@ public class SpinePet {
     Skeleton skeleton;
     SkeletonData skeletonData;
     SkeletonBinary skeletonBinary;
-    SkeletonJson skeletonJson;
+//    SkeletonJson skeletonJson;
     SkeletonRenderer skeletonRenderer;
     TextureAtlas atlas;
     AnimationStateData animationStateData;
     AnimationState animationState;
 
     String defaultAnimationName = "Relax";
+    String onClickedAnimationName = "Interact";
+    private boolean isPlayingSpecialAnimation = false;
     float modelScale = 0.3f;
 
     /**
@@ -115,6 +118,30 @@ public class SpinePet {
         camera.setToOrtho(false);
     }
 
+    public void onClicked() {
+        // TODO 添加点击事件处理逻辑
+        // 切换到动画 `onClickedAnimationName`, 播放一次，不循环。结束后回到动画 `defaultAnimationName`
+        if (isPlayingSpecialAnimation) {
+            return;
+        }
+
+        logger.info("Clicked. Play Animation: " + onClickedAnimationName);
+        isPlayingSpecialAnimation = true;
+        animationState.setAnimation(0, onClickedAnimationName, false);
+        animationState.addAnimation(0, defaultAnimationName, true, 0f);
+
+        animationState.addListener(new AnimationState.AnimationStateAdapter() {
+            @Override
+            public void complete(AnimationState.TrackEntry entry) {
+                if (entry.getAnimation().getName().equals(onClickedAnimationName)) {
+                    isPlayingSpecialAnimation = false;
+                }
+            }
+        });
+    }
+
+
+
     private void loadSpineModel(String modelDirPath, String modelFileName) {
         atlas = new TextureAtlas(Gdx.files.internal(modelDirPath + "/" + modelFileName + ".atlas"));
         skeletonBinary = new SkeletonBinary(atlas);
@@ -137,19 +164,35 @@ public class SpinePet {
         // 获取边界数据
         skeleton.getBounds(min, max, polygon);
 
-        // 计算模型尺寸（考虑缩放）
-//        float modelWidth = max.x - min.x;
-//        float modelHeight = max.y - min.y;
-
         // 屏幕适配计算
         float screenWidth = Gdx.graphics.getWidth();
         skeleton.setX(screenWidth / 2); // 水平居中
     }
 
     private void initAnimation() {
+        // Parse animations
+        Array<Animation> animations = skeletonData.getAnimations();
         animationStateData = new AnimationStateData(skeletonData);
+
+        // 设置不同动画的混合过渡时间为 0.1sec
+        for (int i = 0; i < animations.size; i++) {
+            Animation animation1 = animations.get(i);
+            logger.info(animation1.getName());
+            for (int j = i + 1; j < animations.size; j++) {
+                Animation animation2 = animations.get(j);
+                animationStateData.setMix(animation1, animation2, 0.1f);
+            }
+        }
+
         animationState = new AnimationState(animationStateData);
         animationState.setAnimation(0, defaultAnimationName, true);
     }
 
+//    public boolean isPlayingSpecialAnimation() {
+//        return isPlayingSpecialAnimation;
+//    }
+//
+//    public void setPlayingSpecialAnimation(boolean playingSpecialAnimation) {
+//        isPlayingSpecialAnimation = playingSpecialAnimation;
+//    }
 }

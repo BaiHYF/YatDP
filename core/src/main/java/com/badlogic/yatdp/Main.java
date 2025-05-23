@@ -32,10 +32,12 @@ public class Main extends ApplicationAdapter {
     @Override
     public void create() {
         Gdx.app.setLogLevel(Logger.DEBUG);
-        inputAdapter = new YatInputAdapter();
-        Gdx.input.setInputProcessor(inputAdapter);
 
         pet = new SpinePet(modelDirPath, modelName);
+
+        inputAdapter = new YatInputAdapter();
+        inputAdapter.setSpinePet(pet);
+        Gdx.input.setInputProcessor(inputAdapter);
 
         log.info("APP initialized.");
         if (!Gdx.graphics.supportsDisplayModeChange()) {

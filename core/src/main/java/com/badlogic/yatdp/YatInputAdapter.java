@@ -26,8 +26,11 @@ public class YatInputAdapter extends InputAdapter {
     public Vector2 mousePosition = new Vector2();
     public Vector2 currentWindowPosition = new Vector2();
 
+    private static final float CLICK_TOLERANCE = 1f;
+
     Logger logger = new Logger("YatInputAdapter", Logger.DEBUG);
 
+    private SpinePet petInstance;
 
     public YatInputAdapter() {
         super();
@@ -36,10 +39,9 @@ public class YatInputAdapter extends InputAdapter {
 
     @Override
     public boolean touchDown(int x, int y, int pointer, int button) {
-        logger.debug("Touch down at {" + x + ", " + y + "}, button " + button);
+        logger.info("Touch down at {" + x + ", " + y + "}, button " + button);
 
         if (button == Input.Buttons.LEFT) {
-            isDragging = true;
             mousePosition.set(x, y);
             return true;
         }
@@ -64,6 +66,9 @@ public class YatInputAdapter extends InputAdapter {
         logger.debug("Touch up at {" + x + ", " + y + "}, button " + button);
 
         if (button == Input.Buttons.LEFT) {
+            if (!isDragging) {
+                petInstance.onClicked();
+            }
             isDragging = false;
             return true;
         }
@@ -73,21 +78,22 @@ public class YatInputAdapter extends InputAdapter {
     @Override
     public boolean touchDragged(int x, int y, int pointer) {
         logger.debug("Touch dragged at {" + x + ", " + y + "}");
+        isDragging = true;
 
-        if (isDragging) {
-            Vector2 currentPos = new Vector2(x, y);
-            Vector2 delta = currentPos.cpy().sub(mousePosition);
-            // Get window handle then reset the window position according to the delta
-            Lwjgl3Graphics graphics = (Lwjgl3Graphics) Gdx.graphics;
-            Lwjgl3Window window = graphics.getWindow();
+        Vector2 currentPos = new Vector2(x, y);
+        Vector2 delta = currentPos.cpy().sub(mousePosition);
+        // Get window handle then reset the window position according to the delta
+        Lwjgl3Graphics graphics = (Lwjgl3Graphics) Gdx.graphics;
+        Lwjgl3Window window = graphics.getWindow();
 
-            currentWindowPosition.set(window.getPositionX() + delta.x, window.getPositionY() + delta.y);
-            window.setPosition((int) (window.getPositionX() + delta.x), (int) (window.getPositionY() + delta.y));
+        currentWindowPosition.set(window.getPositionX() + delta.x, window.getPositionY() + delta.y);
+        window.setPosition((int) (window.getPositionX() + delta.x), (int) (window.getPositionY() + delta.y));
 
+        return true;
+    }
 
-            return true;
-        }
-        return false;
+    public void setSpinePet(SpinePet pet) {
+        this.petInstance = pet;
     }
 
     /// Shrink the Window to 32x32
