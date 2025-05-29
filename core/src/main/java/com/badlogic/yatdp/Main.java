@@ -49,7 +49,7 @@ public class Main extends ApplicationAdapter {
         // 创建输入多路复用器
         InputMultiplexer multiplexer = new InputMultiplexer();
         multiplexer.addProcessor(menuManager.getStage());
-        multiplexer.addProcessor(inputAdapter); // 先添加的优先级高
+        multiplexer.addProcessor(inputAdapter);
 
 
         Gdx.input.setInputProcessor(multiplexer); // 设置为统一处理器
@@ -64,6 +64,14 @@ public class Main extends ApplicationAdapter {
 
     @Override
     public void render() {
+        if(currentState == AppState.FULL_SCREEN) {
+            Gdx.input.setInputProcessor(menuManager.getStage());
+        } else {
+            InputMultiplexer multiplexer = new InputMultiplexer();
+            multiplexer.addProcessor(menuManager.getStage());
+            multiplexer.addProcessor(inputAdapter);
+            Gdx.input.setInputProcessor(multiplexer);
+        }
 
         // Clear the screen
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -82,7 +90,7 @@ public class Main extends ApplicationAdapter {
                     menuManager.renderMenu();
                     break;
                 case FULL_SCREEN:
-                    menuManager.renderFullContent();
+                    menuManager.renderMenu();
                     break;
             }
         } else {
@@ -120,9 +128,11 @@ public class Main extends ApplicationAdapter {
     public void showFullContent(String content) {
         currentState = AppState.FULL_SCREEN;
         menuManager.setCurrentContent(content);
+        menuManager.createMenuUI();
     }
 
     public void backToMenu() {
         currentState = AppState.MENU;
+        menuManager.createMenuUI();
     }
 }

@@ -33,38 +33,7 @@ public class MenuManager {
     }
 
     public void renderMenu() {
-        stage.act(Gdx.graphics.getDeltaTime());
-        stage.draw();
-    }
-
-    public void renderFullContent() {
-        // 清屏
-        Gdx.gl.glClear(Gdx.gl20.GL_COLOR_BUFFER_BIT);
-
-        // 创建全屏内容窗口
-        Window contentWindow = new Window("Content", skin);
-        contentWindow.setSize(300, 150);
-        contentWindow.setPosition(0, 0);
-        contentWindow.setTouchable(Touchable.enabled); // 👈👈 必须加上这一句！
-
-        Label contentLabel = new Label(currentContent, skin);
-        contentLabel.setWrap(true);
-
-        TextButton closeButton = new TextButton("exit", skin);
-        closeButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                log.info("close the text");
-                main.backToMenu();
-            }
-        });
-
-        contentWindow.add(contentLabel).expand().fill().pad(10);
-        contentWindow.row();
-        contentWindow.add(closeButton).padBottom(10);
-
-        stage.clear();
-        stage.addActor(contentWindow);
+//        log.info("renderMenu");
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
     }
@@ -74,7 +43,8 @@ public class MenuManager {
         createMenuUI();
     }
 
-    private void createMenuUI() {
+    public void createMenuUI() {
+//        log.info("createMenuUI");
         stage.clear();
 
         if (main.currentState == Main.AppState.MENU) {
@@ -106,6 +76,29 @@ public class MenuManager {
             menuTable.add(contactButton).width(120).height(40).pad(5);
 
             stage.addActor(menuTable);
+        } else {
+            Window contentWindow = new Window("Content", skin);
+            contentWindow.setSize(300, 150);
+            contentWindow.setPosition(0, 0);
+            contentWindow.setTouchable(Touchable.enabled); // 👈👈 必须加上这一句！
+
+            Label contentLabel = new Label(currentContent, skin);
+            contentLabel.setWrap(true);
+
+            TextButton closeButton = new TextButton("exit", skin);
+            closeButton.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    log.info("close the text");
+                    main.backToMenu();
+                }
+            });
+
+            contentWindow.add(contentLabel).expand().fill().pad(10);
+            contentWindow.row();
+            contentWindow.add(closeButton).padBottom(10);
+
+            stage.addActor(contentWindow);
         }
     }
 
