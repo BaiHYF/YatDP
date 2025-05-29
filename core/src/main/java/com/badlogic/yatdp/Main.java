@@ -2,6 +2,7 @@ package com.badlogic.yatdp;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.utils.Logger;
 
@@ -28,14 +29,32 @@ public class Main extends ApplicationAdapter {
 
     /* Utils for minimizing the app~ */
     MinIcon minIcon;
+    MenuManager menuManager;
+
+    public enum  AppState {
+        NORMAL,
+        MENU,
+        FULL_SCREEN
+    }
+
+    public AppState currentState = AppState.NORMAL;
 
     @Override
     public void create() {
         Gdx.app.setLogLevel(Logger.DEBUG);
         inputAdapter = new YatInputAdapter();
-        Gdx.input.setInputProcessor(inputAdapter);
+        menuManager = new MenuManager(this);
         pet = new SpinePet(modelDirPath, modelName);
         minIcon = new MinIcon();
+        // 创建输入多路复用器
+        InputMultiplexer multiplexer = new InputMultiplexer();
+        multiplexer.addProcessor(menuManager.getStage());
+        multiplexer.addProcessor(inputAdapter); // 先添加的优先级高
+
+
+        Gdx.input.setInputProcessor(multiplexer); // 设置为统一处理器
+
+//        Gdx.input.setInputProcessor(inputAdapter);
 
         if (!Gdx.graphics.supportsDisplayModeChange()) {
             log.error("Display mode change is not supported.");
@@ -45,6 +64,7 @@ public class Main extends ApplicationAdapter {
 
     @Override
     public void render() {
+
         // Clear the screen
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         Gdx.gl.glClearColor(0f, 0f, 0f, 0f);
@@ -52,7 +72,19 @@ public class Main extends ApplicationAdapter {
         // if the app is not minimized, render the pet
         if (!inputAdapter.isAppMinimized) {
             float delta = Gdx.graphics.getDeltaTime();
-            pet.render(delta);
+
+            switch (currentState) {
+                case NORMAL:
+                    pet.render(delta);
+                    break;
+                case MENU:
+                    pet.render(delta);
+                    menuManager.renderMenu();
+                    break;
+                case FULL_SCREEN:
+                    menuManager.renderFullContent();
+                    break;
+            }
         } else {
             minIcon.render();
         }
@@ -62,6 +94,7 @@ public class Main extends ApplicationAdapter {
     public void resize(int width, int height) {
         pet.resize();
         minIcon.resize(width, height);
+        menuManager.resize(width, height);
         log.info("APP Resized.");
     }
 
@@ -70,6 +103,26 @@ public class Main extends ApplicationAdapter {
     public void dispose() {
         pet.dispose();
         minIcon.dispose();
+        menuManager.dispose();
         log.info("APP disposed.");
+    }
+    public void toggleMenuMode() {
+        if (currentState == AppState.NORMAL) {
+            currentState = AppState.MENU;
+            Gdx.graphics.setWindowedMode(300, 150);
+        } else if (currentState == AppState.MENU) {
+            currentState = AppState.NORMAL;
+            Gdx.graphics.setWindowedMode(150, 150);
+        }
+        // FULL_SCREEN状态只能通过菜单按钮退出
+    }
+
+    public void showFullContent(String content) {
+        currentState = AppState.FULL_SCREEN;
+        menuManager.setCurrentContent(content);
+    }
+
+    public void backToMenu() {
+        currentState = AppState.MENU;
     }
 }

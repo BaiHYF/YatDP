@@ -43,6 +43,7 @@ public class YatInputAdapter extends InputAdapter {
         if (button == Input.Buttons.LEFT) {
             isDragging = true;
             mousePosition.set(x, y);
+            logger.info("click left mouse button");
             return true;
         }
         if (button == Input.Buttons.RIGHT) {
@@ -56,6 +57,11 @@ public class YatInputAdapter extends InputAdapter {
                 restoreWindow();
                 isAppMinimized = false;
             }
+            return true;
+        }
+        if (button == Input.Buttons.MIDDLE) {
+            // 中键点击切换菜单模式
+            ((Main)Gdx.app.getApplicationListener()).toggleMenuMode();
             return true;
         }
         return false;

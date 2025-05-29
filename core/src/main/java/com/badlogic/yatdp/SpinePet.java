@@ -88,6 +88,13 @@ public class SpinePet {
     public void render(float delta) {
         logger.debug("Rendering ...");
 
+        // 根据应用状态调整模型位置
+        if (((Main)Gdx.app.getApplicationListener()).currentState == Main.AppState.MENU) {
+            skeleton.setX(75); // 在菜单模式下左对齐
+        } else {
+            skeleton.setX(Gdx.graphics.getWidth() / 2); // 正常模式下居中
+        }
+
         // 更新各种状态
         animationState.update(delta);
         animationState.apply(skeleton);
