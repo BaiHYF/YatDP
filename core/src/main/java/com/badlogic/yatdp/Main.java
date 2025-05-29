@@ -34,15 +34,13 @@ public class Main extends ApplicationAdapter {
         Gdx.app.setLogLevel(Logger.DEBUG);
         inputAdapter = new YatInputAdapter();
         Gdx.input.setInputProcessor(inputAdapter);
-
         pet = new SpinePet(modelDirPath, modelName);
+        minIcon = new MinIcon();
 
-        log.info("APP initialized.");
         if (!Gdx.graphics.supportsDisplayModeChange()) {
             log.error("Display mode change is not supported.");
         }
-
-        minIcon = new MinIcon();
+        log.info("APP initialized.");
     }
 
     @Override

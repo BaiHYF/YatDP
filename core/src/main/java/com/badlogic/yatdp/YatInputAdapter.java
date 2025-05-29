@@ -22,6 +22,8 @@ public class YatInputAdapter extends InputAdapter {
 
     public boolean isDragging = false;
     public boolean isAppMinimized = false;
+    // whether or not to show the menu
+    public boolean showMenu = false;
 
     public Vector2 mousePosition = new Vector2();
     public Vector2 currentWindowPosition = new Vector2();

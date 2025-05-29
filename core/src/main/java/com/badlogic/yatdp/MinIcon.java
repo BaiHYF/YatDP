@@ -3,10 +3,13 @@ package com.badlogic.yatdp;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.Logger;
 
 public class MinIcon {
 
     /* Utils for minimizing the app~ */
+
+    Logger logger = new Logger("MinIcon", Logger.DEBUG);
 
     /// icon texture to be drawn when app is minimized
     Texture iconMinimized;
@@ -42,5 +45,6 @@ public class MinIcon {
         iconMinimized = new Texture("icon/coffee-cup-icon.png");
         iconMinimized.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         viewportMinimized = new FitViewport(32, 32);
+        logger.info("MinIcon inited.");
     }
 }
