@@ -1,17 +1,23 @@
 package com.badlogic.yatdp;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.Logger;
 
@@ -27,9 +33,28 @@ public class MenuManager {
         this.main = main;
         skin = new Skin(Gdx.files.internal("data/uiskin.json")); // 需要uiskin.json文件
         stage = new Stage(new ScreenViewport());
+//        skin.add("default", new BitmapFont());
 
         // 初始化内容
         currentContent = "Menu";
+        TextButtonStyle style = new TextButton.TextButtonStyle();
+
+        // 创建纯色背景（需要 TextureRegionDrawable）
+        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+        pixmap.setColor(Color.GRAY);
+        pixmap.fill();
+        Texture texture = new Texture(pixmap);
+        pixmap.dispose();
+
+        style.up = new TextureRegionDrawable(new TextureRegion(texture));
+        style.down = new TextureRegionDrawable(new TextureRegion(texture)).tint(Color.DARK_GRAY);
+        style.over = new TextureRegionDrawable(new TextureRegion(texture)).tint(Color.LIGHT_GRAY);
+
+        style.font = skin.getFont("default-font"); // ✅ 正确！
+        style.fontColor = Color.WHITE;
+        style.downFontColor = Color.RED;
+        style.overFontColor = Color.YELLOW;
+        skin.add("custom-button", style, TextButtonStyle.class);
     }
 
     public void renderMenu() {
@@ -52,7 +77,8 @@ public class MenuManager {
             menuTable.setSize(150, 150);
             menuTable.setPosition(150, 0);
 
-            TextButton aboutButton = new TextButton("App Description", skin);
+            TextButton aboutButton = new TextButton("App Description", skin, "custom-button");
+
             aboutButton.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -62,7 +88,7 @@ public class MenuManager {
                 }
             });
 
-            TextButton contactButton = new TextButton("About Us", skin);
+            TextButton contactButton = new TextButton("About Us", skin, "custom-button");
             contactButton.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -85,7 +111,7 @@ public class MenuManager {
             Label contentLabel = new Label(currentContent, skin);
             contentLabel.setWrap(true);
 
-            TextButton closeButton = new TextButton("exit", skin);
+            TextButton closeButton = new TextButton("exit", skin, "custom-button");
             closeButton.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
