@@ -46,7 +46,7 @@ public class YatInputAdapter extends InputAdapter {
             logger.info("click left mouse button");
             return true;
         }
-        if (button == Input.Buttons.RIGHT) {
+        if (button == Input.Buttons.MIDDLE) {
             if (!isAppMinimized) {
                 Lwjgl3Graphics graphics = (Lwjgl3Graphics) Gdx.graphics;
                 Lwjgl3Window window = graphics.getWindow();
@@ -59,7 +59,7 @@ public class YatInputAdapter extends InputAdapter {
             }
             return true;
         }
-        if (button == Input.Buttons.MIDDLE) {
+        if (button == Input.Buttons.RIGHT) {
             // 中键点击切换菜单模式
             ((Main)Gdx.app.getApplicationListener()).toggleMenuMode();
             return true;
@@ -116,7 +116,11 @@ public class YatInputAdapter extends InputAdapter {
 
         Lwjgl3Graphics graphics = (Lwjgl3Graphics) Gdx.graphics;
         Lwjgl3Window window = graphics.getWindow();
-        Gdx.graphics.setWindowedMode(150, 150);
+        if (((Main)Gdx.app.getApplicationListener()).currentState == Main.AppState.NORMAL) {
+            Gdx.graphics.setWindowedMode(150, 150);
+        } else {
+            Gdx.graphics.setWindowedMode(300, 150);
+        }
         window.setPosition((int) currentWindowPosition.x, (int) currentWindowPosition.y);
     }
 }
