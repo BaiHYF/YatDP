@@ -1,0 +1,9 @@
+<config>
+    <modelDirPath>test/test_spine_model</modelDirPath>
+    <modelName>build_char_002_amiya_winter#1</modelName>
+    <defaultWindowWidth>150</defaultWindowWidth>
+    <defaultWindowHeight>150</defaultWindowHeight>
+    <iconPath>icon/coffee-cup-icon.png</iconPath>
+    <defaultAnimationName>Relax</defaultAnimationName>
+    <onClickedAnimationName>Interact</onClickedAnimationName>
+</config>
