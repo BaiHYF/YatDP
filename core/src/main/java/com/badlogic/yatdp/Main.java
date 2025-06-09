@@ -33,6 +33,25 @@ public class Main extends ApplicationAdapter {
     public void create() {
         Gdx.app.setLogLevel(Logger.DEBUG);
 
+        // 加载配置文件（支持 JSON 或 XML 格式）
+        ConfigManager config = ConfigManager.loadConfig("config/config.json");
+        // ConfigManager config = ConfigManager.loadConfig("config/config.xml");
+        if (config != null) {
+            // 配置加载成功，将配置中的参数应用到系统初始化中
+            modelDirPath = config.modelDirPath;
+            modelName    = config.modelName;
+            log.info("配置文件加载成功，配置信息：");
+            log.info("modelDirPath: " + config.modelDirPath);
+            log.info("modelName: " + config.modelName);
+            log.info("defaultWindowWidth: " + config.defaultWindowWidth);
+            log.info("defaultWindowHeight: " + config.defaultWindowHeight);
+            log.info("iconPath: " + config.iconPath);
+            log.info("defaultAnimationName: " + config.defaultAnimationName);
+            log.info("onClickedAnimationName: " + config.onClickedAnimationName);
+        } else {
+            log.error("配置文件加载失败，使用硬编码默认参数初始化！");
+        }
+
         pet = new SpinePet(modelDirPath, modelName);
 
         inputAdapter = new YatInputAdapter();

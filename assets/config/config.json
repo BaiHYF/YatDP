@@ -1,0 +1,9 @@
+{
+  "modelDirPath": "test/test_spine_model",
+  "modelName": "build_char_002_amiya_winter#1",
+  "defaultWindowWidth": 150,
+  "defaultWindowHeight": 150,
+  "iconPath": "icon/coffee-cup-icon.png",
+  "defaultAnimationName": "Relax",
+  "onClickedAnimationName": "Interact"
+}
