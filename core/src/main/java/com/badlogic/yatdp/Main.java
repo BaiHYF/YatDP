@@ -42,9 +42,10 @@ public class Main extends ApplicationAdapter {
     @Override
     public void create() {
         Gdx.app.setLogLevel(Logger.DEBUG);
-        inputAdapter = new YatInputAdapter();
-        menuManager = new MenuManager(this);
         pet = new SpinePet(modelDirPath, modelName);
+        inputAdapter = new YatInputAdapter();
+        inputAdapter.setSpinePet(pet);
+        menuManager = new MenuManager(this);
         minIcon = new MinIcon();
         // 创建输入多路复用器
         InputMultiplexer multiplexer = new InputMultiplexer();
@@ -53,8 +54,6 @@ public class Main extends ApplicationAdapter {
 
 
         Gdx.input.setInputProcessor(multiplexer); // 设置为统一处理器
-
-//        Gdx.input.setInputProcessor(inputAdapter);
 
         if (!Gdx.graphics.supportsDisplayModeChange()) {
             log.error("Display mode change is not supported.");
@@ -109,6 +108,7 @@ public class Main extends ApplicationAdapter {
 
     @Override
     public void dispose() {
+        // Just dispose everything
         pet.dispose();
         minIcon.dispose();
         menuManager.dispose();
