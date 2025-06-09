@@ -10,6 +10,8 @@ import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.Logger;
 import com.esotericsoftware.spine.*;
 import com.esotericsoftware.spine.utils.TwoColorPolygonBatch;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 
 /**
  * 封装桌面宠物中 Spine 模型与动画的相关操作。
@@ -54,6 +56,8 @@ public class SpinePet {
     AnimationStateData animationStateData;
     AnimationState animationState;
 
+    Sound clickSound;
+
     String defaultAnimationName = "Relax";
     String onClickedAnimationName = "Interact";
     private boolean isPlayingSpecialAnimation = false;
@@ -74,6 +78,7 @@ public class SpinePet {
         batch = new TwoColorPolygonBatch();
         skeletonRenderer = new SkeletonRenderer();
         skeletonRenderer.setPremultipliedAlpha(true);
+        clickSound = Gdx.audio.newSound(Gdx.files.internal("sounds/mixkit-magic-notification-ring-2344.mp3"));
 
         loadSpineModel(modelDirPath, modelFileName);
         configureSkeleton();
@@ -119,6 +124,9 @@ public class SpinePet {
     public void dispose() {
         atlas.dispose();
         batch.dispose();
+        if (clickSound != null) {
+            clickSound.dispose();
+        }
     }
 
     public void resize() {
@@ -133,6 +141,13 @@ public class SpinePet {
         }
 
         logger.info("Clicked. Play Animation: " + onClickedAnimationName);
+
+        // 播放点击声音
+        if (clickSound != null) {
+            clickSound.play();  // 默认音量 1.0
+            logger.info("Clicked. Make sound.");
+        }
+
         isPlayingSpecialAnimation = true;
         animationState.setAnimation(0, onClickedAnimationName, false);
         animationState.addAnimation(0, defaultAnimationName, true, 0f);
