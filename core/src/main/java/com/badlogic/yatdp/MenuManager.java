@@ -33,7 +33,6 @@ public class MenuManager {
         this.main = main;
         skin = new Skin(Gdx.files.internal("data/uiskin.json")); // 需要uiskin.json文件
         stage = new Stage(new ScreenViewport());
-//        skin.add("default", new BitmapFont());
 
         // 初始化内容
         currentContent = "Menu";
@@ -79,6 +78,8 @@ public class MenuManager {
             menuTable.setSize(150, 150);
             menuTable.setPosition(150, 0);
 
+            // create buttons on menu
+
             TextButton aboutButton = new TextButton("App Description", skin, "custom-button");
 
             aboutButton.addListener(new ChangeListener() {
@@ -99,9 +100,35 @@ public class MenuManager {
                 }
             });
 
-            menuTable.add(aboutButton).width(120).height(40).pad(5);
+            TextButton minimizeButton = new TextButton("Minimize", skin, "custom-button");
+            minimizeButton.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    log.info("click the 'Minimize' button");
+                    main.inputAdapter.handleMinimizedAndRestore();
+                }
+            });
+
+            TextButton exitButton = new TextButton("Exit", skin, "custom-button");
+            exitButton.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    // 退出程序
+                    main.dispose(); // 不知道这样写合不合适，但确实能实现退出
+                }
+            });
+
+
+            // Add buttons to menuTable
+            menuTable.add(minimizeButton).width(120).height(40).pad(5);
             menuTable.row();
-            menuTable.add(contactButton).width(120).height(40).pad(5);
+
+            menuTable.add(aboutButton).width(120).height(40).pad(5);
+//            menuTable.row();
+//            menuTable.add(contactButton).width(120).height(40).pad(5);
+
+            menuTable.row();
+            menuTable.add(exitButton).width(120).height(40).pad(5);
 
             stage.addActor(menuTable);
         } else {

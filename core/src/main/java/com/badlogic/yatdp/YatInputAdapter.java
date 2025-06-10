@@ -47,21 +47,28 @@ public class YatInputAdapter extends InputAdapter {
             isLeftButtonPressed = true;
             return true;
         }
-        if (button == Input.Buttons.MIDDLE) {
-            if (!isAppMinimized) {
-                Lwjgl3Graphics graphics = (Lwjgl3Graphics) Gdx.graphics;
-                Lwjgl3Window window = graphics.getWindow();
-                currentWindowPosition.set(window.getPositionX(), window.getPositionY());
-                minimizeWindow();
-                isAppMinimized = true;
-            } else {
-                restoreWindow();
-                isAppMinimized = false;
-            }
-            return true;
-        }
+        // 弃用中键点击是的缩放功能，改为在菜单中处理
+//        if (button == Input.Buttons.MIDDLE) {
+//            if (!isAppMinimized) {
+//                Lwjgl3Graphics graphics = (Lwjgl3Graphics) Gdx.graphics;
+//                Lwjgl3Window window = graphics.getWindow();
+//                currentWindowPosition.set(window.getPositionX(), window.getPositionY());
+//                minimizeWindow();
+//                isAppMinimized = true;
+//            } else {
+//                restoreWindow();
+//                isAppMinimized = false;
+//            }
+//            return true;
+//        }
         if (button == Input.Buttons.RIGHT) {
             // 右键点击时显示/隐藏菜单
+            logger.info("Right click - isAppMinimized = " + isAppMinimized);
+            if (isAppMinimized) {
+                restoreWindow();
+                isAppMinimized = false;
+                return false;
+            }
 
             ((Main)Gdx.app.getApplicationListener()).toggleMenuMode();
             if (!isMenunShown) {
@@ -120,6 +127,20 @@ public class YatInputAdapter extends InputAdapter {
     public void setSpinePet(SpinePet pet) {
         this.petInstance = pet;
     }
+
+    public void handleMinimizedAndRestore() {
+        if (!isAppMinimized) {
+            Lwjgl3Graphics graphics = (Lwjgl3Graphics) Gdx.graphics;
+            Lwjgl3Window window = graphics.getWindow();
+            currentWindowPosition.set(window.getPositionX(), window.getPositionY());
+            minimizeWindow();
+            isAppMinimized = true;
+        } else {
+            restoreWindow();
+            isAppMinimized = false;
+        }
+    }
+
 
     /// Shrink the Window to 32x32
     private void minimizeWindow() {
