@@ -44,8 +44,8 @@ public class Lwjgl3Launcher {
         configuration.setWindowIcon("赤色のチューリップx128.png", "赤色のチューリップx64.png", "赤色のチューリップx32.png", "赤色のチューリップx16.png");
 //        configuration.setWindowedMode(150, 150);
         configuration.setWindowPosition(0, 50);   // TO BE SET IN CONFIG
-        configuration.setDecorated(true);
-//        configuration.setDecorated(false);
+//        configuration.setDecorated(true);
+        configuration.setDecorated(false);
 //        configuration.setResizable(true);
         configuration.setTransparentFramebuffer(true);
         configuration.setWindowListener(new Lwjgl3WindowAdapter() {

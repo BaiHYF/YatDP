@@ -15,34 +15,27 @@ import com.badlogic.gdx.utils.Logger;
  * @version 1.0
  */
 public class Main extends ApplicationAdapter {
+    public AppState currentState = AppState.NORMAL;
     Logger log = new Logger("YatDP_CORE", Logger.DEBUG);
-    YatInputAdapter inputAdapter;
 
 
     /* Utils for drawing pet model~ */
-
+    YatInputAdapter inputAdapter;
     // TODO: 添加配置文件模块，模型路径写在配置文件中，模型初始化时读取。
     String modelDirPath = "test/test_spine_model";
     String modelName = "build_char_002_amiya_winter#1";
     SpinePet pet;
-
-
     /* Utils for minimizing the app~ */
     MinIcon minIcon;
     MenuManager menuManager;
 
-    public enum  AppState {
-        NORMAL,
-        MENU,
-        FULL_SCREEN
-    }
-
-    public AppState currentState = AppState.NORMAL;
-
     @Override
     public void create() {
         Gdx.app.setLogLevel(Logger.DEBUG);
-        pet = new SpinePet(modelDirPath, modelName);
+        ConfigManager config = ConfigManager.loadConfig("config/config.json");
+        if (config != null) {
+            pet = new SpinePet(config.modelDirPath, config.modelName);
+        }
         inputAdapter = new YatInputAdapter();
         inputAdapter.setSpinePet(pet);
         menuManager = new MenuManager(this);
@@ -63,7 +56,7 @@ public class Main extends ApplicationAdapter {
 
     @Override
     public void render() {
-        if(currentState == AppState.FULL_SCREEN) {
+        if (currentState == AppState.FULL_SCREEN) {
             Gdx.input.setInputProcessor(menuManager.getStage());
         } else {
             InputMultiplexer multiplexer = new InputMultiplexer();
@@ -105,7 +98,6 @@ public class Main extends ApplicationAdapter {
         log.info("APP Resized.");
     }
 
-
     @Override
     public void dispose() {
         // Just dispose everything
@@ -114,6 +106,7 @@ public class Main extends ApplicationAdapter {
         menuManager.dispose();
         log.info("APP disposed.");
     }
+
     public void toggleMenuMode() {
         if (currentState == AppState.NORMAL) {
             currentState = AppState.MENU;
@@ -134,5 +127,11 @@ public class Main extends ApplicationAdapter {
     public void backToMenu() {
         currentState = AppState.MENU;
         menuManager.createMenuUI();
+    }
+
+    public enum AppState {
+        NORMAL,
+        MENU,
+        FULL_SCREEN
     }
 }
