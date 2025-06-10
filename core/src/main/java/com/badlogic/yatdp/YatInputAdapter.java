@@ -63,6 +63,7 @@ public class YatInputAdapter extends InputAdapter {
         if (button == Input.Buttons.RIGHT) {
             // 右键点击时显示/隐藏菜单
 
+            ((Main)Gdx.app.getApplicationListener()).toggleMenuMode();
             if (!isMenunShown) {
                 Lwjgl3Graphics graphics = (Lwjgl3Graphics) Gdx.graphics;
                 Lwjgl3Window window = graphics.getWindow();
@@ -74,8 +75,7 @@ public class YatInputAdapter extends InputAdapter {
                 isMenunShown = false;
             }
 
-            ((Main)Gdx.app.getApplicationListener()).toggleMenuMode();
-            return false;
+            return true;
         }
         return false;
     }

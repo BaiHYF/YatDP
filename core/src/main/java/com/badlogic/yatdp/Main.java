@@ -21,7 +21,6 @@ public class Main extends ApplicationAdapter {
 
     /* Utils for drawing pet model~ */
     YatInputAdapter inputAdapter;
-    // TODO: 添加配置文件模块，模型路径写在配置文件中，模型初始化时读取。
     String modelDirPath = "test/test_spine_model";
     String modelName = "build_char_002_amiya_winter#1";
     SpinePet pet;
@@ -35,7 +34,7 @@ public class Main extends ApplicationAdapter {
         ConfigManager config = ConfigManager.loadConfig("config/config.json");
         if (config != null) {
             modelDirPath = config.modelDirPath;
-            modelName    = config.modelName;
+            modelName = config.modelName;
             log.info("配置文件加载成功，配置信息：");
             log.info("modelDirPath: " + config.modelDirPath);
             log.info("modelName: " + config.modelName);
@@ -54,7 +53,6 @@ public class Main extends ApplicationAdapter {
         InputMultiplexer multiplexer = new InputMultiplexer();
         multiplexer.addProcessor(menuManager.getStage());
         multiplexer.addProcessor(inputAdapter);
-
 
         Gdx.input.setInputProcessor(multiplexer); // 设置为统一处理器
 
@@ -95,6 +93,7 @@ public class Main extends ApplicationAdapter {
                     menuManager.renderMenu();
                     break;
             }
+
         } else {
             minIcon.render();
         }
@@ -120,21 +119,22 @@ public class Main extends ApplicationAdapter {
     public void toggleMenuMode() {
         if (currentState == AppState.NORMAL) {
             currentState = AppState.MENU;
-//            Gdx.graphics.setWindowedMode(300, 150);
         } else if (currentState == AppState.MENU) {
             currentState = AppState.NORMAL;
-//            Gdx.graphics.setWindowedMode(150, 150);
         }
+        log.info("Now app state is " + currentState);
         // FULL_SCREEN状态只能通过菜单按钮退出
     }
 
     public void showFullContent(String content) {
+        log.info("show full content");
         currentState = AppState.FULL_SCREEN;
         menuManager.setCurrentContent(content);
         menuManager.createMenuUI();
     }
 
     public void backToMenu() {
+        log.info("back to menu");
         currentState = AppState.MENU;
         menuManager.createMenuUI();
     }
