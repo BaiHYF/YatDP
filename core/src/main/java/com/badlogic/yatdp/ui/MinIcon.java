@@ -45,6 +45,6 @@ public class MinIcon {
         iconMinimized = new Texture("icon/coffee-cup-icon.png");
         iconMinimized.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         viewportMinimized = new FitViewport(32, 32);
-        logger.info("MinIcon inited.");
+        logger.info("MinIcon initialized.");
     }
 }

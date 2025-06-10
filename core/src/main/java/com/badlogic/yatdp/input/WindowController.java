@@ -19,6 +19,7 @@ public class WindowController {
     }
 
     public void minimize() {
+        YatInputAdapter.getInstance().setIsMinimized(true);
         Lwjgl3Window window = getWindow();
         int screenX = window.getPositionX();
         int screenY = window.getPositionY();
@@ -35,6 +36,7 @@ public class WindowController {
     }
 
     public void restore() {
+        YatInputAdapter.getInstance().setIsMinimized(false);
         Lwjgl3Window window = getWindow();
         int screenX = window.getPositionX();
         int screenY = window.getPositionY();

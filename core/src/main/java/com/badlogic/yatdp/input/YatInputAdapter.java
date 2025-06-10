@@ -19,6 +19,7 @@ import com.badlogic.yatdp.core.MainApp;
  */
 public class YatInputAdapter extends InputAdapter {
 
+    private static YatInputAdapter INSTANCE;
     private final WindowController windowController;
     private final SpinePet pet;
     private final MainApp app;
@@ -36,6 +37,12 @@ public class YatInputAdapter extends InputAdapter {
         this.windowController = controller;
         this.pet = pet;
         this.app = app;
+
+        INSTANCE = this;
+    }
+
+    public static YatInputAdapter getInstance() {
+        return INSTANCE;
     }
 
     @Override
@@ -88,7 +95,12 @@ public class YatInputAdapter extends InputAdapter {
         }
     }
 
-    public boolean isAppMinimized() {
+    // Getter and Setter methods
+
+    public boolean getIsMinimized() {
         return isMinimized;
+    }
+    public void setIsMinimized(boolean isMinimized) {
+        this.isMinimized = isMinimized;
     }
 }

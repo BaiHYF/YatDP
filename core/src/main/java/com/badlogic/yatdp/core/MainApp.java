@@ -67,7 +67,7 @@ public class MainApp extends ApplicationAdapter {
     public void render() {
         clearScreen();
 
-        if (inputAdapter.isAppMinimized()) {
+        if (inputAdapter.getIsMinimized()) {
             minIcon.render();
             return;
         }
