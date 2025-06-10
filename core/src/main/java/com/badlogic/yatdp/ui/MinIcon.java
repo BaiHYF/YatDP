@@ -1,4 +1,4 @@
-package com.badlogic.yatdp;
+package com.badlogic.yatdp.ui;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;

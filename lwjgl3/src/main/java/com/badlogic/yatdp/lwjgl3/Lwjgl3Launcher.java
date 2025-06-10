@@ -5,7 +5,7 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Window;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3WindowAdapter;
-import com.badlogic.yatdp.Main;
+import com.badlogic.yatdp.core.MainApp;
 import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
@@ -21,7 +21,7 @@ public class Lwjgl3Launcher {
     }
 
     private static void createApplication() {
-        new Lwjgl3Application(new Main(), getDefaultConfiguration());
+        new Lwjgl3Application(new MainApp(), getDefaultConfiguration());
     }
 
     private static Lwjgl3ApplicationConfiguration getDefaultConfiguration() {
