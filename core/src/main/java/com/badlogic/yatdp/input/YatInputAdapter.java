@@ -83,11 +83,13 @@ public class YatInputAdapter extends InputAdapter {
     }
 
     private void handleRightClick() {
+        app.toggleMenuMode();
         if (isMinimized) {
+            isMenuShown = false;
+            logger.info("Menu hidden from minimize.");
             windowController.restore();
             isMinimized = false;
         } else {
-            app.toggleMenuMode();
             if (!isMenuShown) {
                 logger.info("Menu shown.");
                 windowController.expand();
