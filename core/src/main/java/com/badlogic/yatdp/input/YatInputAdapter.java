@@ -24,7 +24,7 @@ public class YatInputAdapter extends InputAdapter {
     private final SpinePet pet;
     private final MainApp app;
 
-    private Vector2 mouseDownPos = new Vector2();
+    private final Vector2 mouseDownPos = new Vector2();
     private boolean isLeftPressed = false;
     private boolean isDragging = false;
     private boolean isMinimized = false;
@@ -39,6 +39,8 @@ public class YatInputAdapter extends InputAdapter {
         this.app = app;
 
         INSTANCE = this;
+
+        logger.info("YatInputAdapter initialized");
     }
 
     public static YatInputAdapter getInstance() {
@@ -87,8 +89,10 @@ public class YatInputAdapter extends InputAdapter {
         } else {
             app.toggleMenuMode();
             if (!isMenuShown) {
+                logger.info("Menu shown.");
                 windowController.expand();
             } else {
+                logger.info("Menu hidden.");
                 windowController.restore();
             }
             isMenuShown = !isMenuShown;

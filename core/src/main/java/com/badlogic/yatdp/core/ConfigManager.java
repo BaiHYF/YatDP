@@ -1,4 +1,4 @@
-package com.badlogic.yatdp;
+package com.badlogic.yatdp.core;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -46,7 +46,7 @@ public class ConfigManager {
     public String onClickedAnimationName;     // 点击后的动画名称
 
     // 单例实例
-    private static ConfigManager instance;
+    private static ConfigManager INSTANTCE;
 
     /**
      * 私有构造方法，防止外部直接实例化
@@ -62,19 +62,19 @@ public class ConfigManager {
      * @return 加载成功后的 ConfigManager 单例，如果加载失败返回 null
      */
     public static ConfigManager loadConfig(String filePath) {
-        instance = new ConfigManager();
+        INSTANTCE = new ConfigManager();
         FileHandle fileHandle = Gdx.files.internal(filePath);
 
         if (filePath.endsWith(".json")) {
-            instance.loadJson(fileHandle);
+            INSTANTCE.loadJson(fileHandle);
         } else if (filePath.endsWith(".xml")) {
-            instance.loadXml(fileHandle);
+            INSTANTCE.loadXml(fileHandle);
         } else {
             logger.error("不支持的配置文件格式。仅支持 JSON 与 XML 格式。");
-            instance = null;
+            INSTANTCE = null;
         }
 
-        return instance;
+        return INSTANTCE;
     }
 
     /**
@@ -140,6 +140,6 @@ public class ConfigManager {
      * @return ConfigManager 的单例实例
      */
     public static ConfigManager getInstance() {
-        return instance;
+        return INSTANTCE;
     }
 }

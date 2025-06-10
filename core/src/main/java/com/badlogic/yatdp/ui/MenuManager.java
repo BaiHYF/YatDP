@@ -1,5 +1,12 @@
 package com.badlogic.yatdp.ui;
 
+/* MenuManager目前还存在一个潜在的非预期行为。
+*  当用户点击右键进入菜单，然后点击Minimize按钮将应用缩小，之后再通过
+*  点击右键复原应用 -- 这些都没有问题。
+*  问题在于经过上述操作后，当用户再次点击右键希望进入菜单界面时，
+*  第一次点击是无效的。即需要点两下右键才能重新进入菜单。
+*  暂时还没找到这个问题产生的原因。*/
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -11,14 +18,12 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.Logger;
-import com.badlogic.yatdp.core.AppState;
 import com.badlogic.yatdp.core.MainApp;
 import com.badlogic.yatdp.input.WindowController;
 

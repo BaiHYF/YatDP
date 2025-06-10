@@ -5,7 +5,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.utils.Logger;
-import com.badlogic.yatdp.ConfigManager;
 import com.badlogic.yatdp.ui.MenuManager;
 import com.badlogic.yatdp.ui.MinIcon;
 import com.badlogic.yatdp.pet.SpinePet;
