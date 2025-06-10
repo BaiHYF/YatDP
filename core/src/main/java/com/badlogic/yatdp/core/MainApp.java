@@ -48,11 +48,14 @@ public class MainApp extends ApplicationAdapter {
 
         // 创建回调函数
         Consumer<String> showContentCallback = this::showFullContent;
-        Runnable backToMenuCallback = this::backToMenu;
+        Runnable exitCallBack = () -> {
+            Gdx.app.exit();
+            System.exit(0);
+        };
         WindowController windowController = new WindowController();
 
         // 初始化 MenuManager
-        menuManager = new MenuManager(windowController, showContentCallback, backToMenuCallback);
+        menuManager = new MenuManager(windowController, showContentCallback, exitCallBack);
 
         inputAdapter = new YatInputAdapter(windowController, pet, this);
         Gdx.input.setInputProcessor(new InputMultiplexer(menuManager.getStage(), inputAdapter));
