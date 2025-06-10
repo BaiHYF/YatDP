@@ -22,12 +22,13 @@ public class YatInputAdapter extends InputAdapter {
 
     public boolean isDragging = false;
     public boolean isAppMinimized = false;
+    public boolean isMenunShown = false;
     // whether or not to show the menu
     public boolean showMenu = false;
 
     public Vector2 mousePosition = new Vector2();
     public Vector2 currentWindowPosition = new Vector2();
-
+    public boolean isLeftButtonPressed = false;
     Logger logger = new Logger("YatInputAdapter", Logger.DEBUG);
 
     private SpinePet petInstance;
@@ -43,7 +44,7 @@ public class YatInputAdapter extends InputAdapter {
 
         if (button == Input.Buttons.LEFT) {
             mousePosition.set(x, y);
-            logger.info("click left mouse button");
+            isLeftButtonPressed = true;
             return true;
         }
         if (button == Input.Buttons.MIDDLE) {
@@ -60,9 +61,21 @@ public class YatInputAdapter extends InputAdapter {
             return true;
         }
         if (button == Input.Buttons.RIGHT) {
-            // 中键点击切换菜单模式
+            // 右键点击时显示/隐藏菜单
+
+            if (!isMenunShown) {
+                Lwjgl3Graphics graphics = (Lwjgl3Graphics) Gdx.graphics;
+                Lwjgl3Window window = graphics.getWindow();
+                currentWindowPosition.set(window.getPositionX(), window.getPositionY());
+                expandWindow();
+                isMenunShown = true;
+            } else {
+                restoreWindow();
+                isMenunShown = false;
+            }
+
             ((Main)Gdx.app.getApplicationListener()).toggleMenuMode();
-            return true;
+            return false;
         }
         return false;
     }
@@ -72,6 +85,7 @@ public class YatInputAdapter extends InputAdapter {
         logger.debug("Touch up at {" + x + ", " + y + "}, button " + button);
 
         if (button == Input.Buttons.LEFT) {
+            isLeftButtonPressed = false;
             if (!isDragging) {
                 petInstance.onClicked();
             }
@@ -83,7 +97,12 @@ public class YatInputAdapter extends InputAdapter {
 
     @Override
     public boolean touchDragged(int x, int y, int pointer) {
-        logger.debug("Touch dragged at {" + x + ", " + y + "}");
+        logger.info("Touch dragged at {" + x + ", " + y + "}");
+
+        if (!isLeftButtonPressed) {
+            return false;
+        }
+
         isDragging = true;
 
         Vector2 currentPos = new Vector2(x, y);
@@ -115,16 +134,30 @@ public class YatInputAdapter extends InputAdapter {
         window.setPosition(screenX, screenY);
     }
 
+    ///  Expand the Window to 300 x 150
+    private void expandWindow() {
+        logger.info("Window is expanding to 300x150");
+
+        Lwjgl3Graphics graphics = (Lwjgl3Graphics) Gdx.graphics;
+        Lwjgl3Window window = graphics.getWindow();
+
+        int screenX = window.getPositionX();
+        int screenY = window.getPositionY();
+        Gdx.graphics.setWindowedMode(300, 150);
+        window.setPosition(screenX, screenY);
+    }
+
     private void restoreWindow() {
         logger.info("Window is restoring.");
 
         Lwjgl3Graphics graphics = (Lwjgl3Graphics) Gdx.graphics;
         Lwjgl3Window window = graphics.getWindow();
-        if (((Main)Gdx.app.getApplicationListener()).currentState == Main.AppState.NORMAL) {
-            Gdx.graphics.setWindowedMode(150, 150);
-        } else {
-            Gdx.graphics.setWindowedMode(300, 150);
-        }
+//        if (((Main)Gdx.app.getApplicationListener()).currentState == Main.AppState.NORMAL) {
+//            Gdx.graphics.setWindowedMode(150, 150);
+//        } else {
+//            Gdx.graphics.setWindowedMode(300, 150);
+//        }
+        Gdx.graphics.setWindowedMode(150, 150);
         window.setPosition((int) currentWindowPosition.x, (int) currentWindowPosition.y);
     }
 }

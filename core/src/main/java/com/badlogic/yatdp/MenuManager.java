@@ -69,11 +69,14 @@ public class MenuManager {
     }
 
     public void createMenuUI() {
-//        log.info("createMenuUI");
+        log.info("createMenuUI");
         stage.clear();
 
         if (main.currentState == Main.AppState.MENU) {
             Table menuTable = new Table();
+
+            // Dont use hard code here
+            log.info("create menu");
             menuTable.setSize(150, 150);
             menuTable.setPosition(150, 0);
 
@@ -105,6 +108,7 @@ public class MenuManager {
         } else {
             Window contentWindow = new Window("Content", skin);
             contentWindow.setSize(300, 150);
+            log.info("create contentWindow");
             contentWindow.setPosition(0, 0);
             contentWindow.setTouchable(Touchable.enabled); // 👈👈 必须加上这一句！
 

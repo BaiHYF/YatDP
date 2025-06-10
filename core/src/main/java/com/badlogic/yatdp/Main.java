@@ -34,6 +34,16 @@ public class Main extends ApplicationAdapter {
         Gdx.app.setLogLevel(Logger.DEBUG);
         ConfigManager config = ConfigManager.loadConfig("config/config.json");
         if (config != null) {
+            modelDirPath = config.modelDirPath;
+            modelName    = config.modelName;
+            log.info("配置文件加载成功，配置信息：");
+            log.info("modelDirPath: " + config.modelDirPath);
+            log.info("modelName: " + config.modelName);
+            log.info("defaultWindowWidth: " + config.defaultWindowWidth);
+            log.info("defaultWindowHeight: " + config.defaultWindowHeight);
+            log.info("iconPath: " + config.iconPath);
+            log.info("defaultAnimationName: " + config.defaultAnimationName);
+            log.info("onClickedAnimationName: " + config.onClickedAnimationName);
             pet = new SpinePet(config.modelDirPath, config.modelName);
         }
         inputAdapter = new YatInputAdapter();
@@ -110,10 +120,10 @@ public class Main extends ApplicationAdapter {
     public void toggleMenuMode() {
         if (currentState == AppState.NORMAL) {
             currentState = AppState.MENU;
-            Gdx.graphics.setWindowedMode(300, 150);
+//            Gdx.graphics.setWindowedMode(300, 150);
         } else if (currentState == AppState.MENU) {
             currentState = AppState.NORMAL;
-            Gdx.graphics.setWindowedMode(150, 150);
+//            Gdx.graphics.setWindowedMode(150, 150);
         }
         // FULL_SCREEN状态只能通过菜单按钮退出
     }

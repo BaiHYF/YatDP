@@ -5,7 +5,6 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Window;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3WindowAdapter;
-import com.badlogic.gdx.tests.*;
 import com.badlogic.yatdp.Main;
 import org.lwjgl.glfw.GLFW;
 
@@ -42,11 +41,8 @@ public class Lwjgl3Launcher {
         //// You can change these files; they are in lwjgl3/src/main/resources/ .
         //// They can also be loaded from the root of assets/ .
         configuration.setWindowIcon("赤色のチューリップx128.png", "赤色のチューリップx64.png", "赤色のチューリップx32.png", "赤色のチューリップx16.png");
-//        configuration.setWindowedMode(150, 150);
         configuration.setWindowPosition(0, 50);   // TO BE SET IN CONFIG
-//        configuration.setDecorated(true);
         configuration.setDecorated(false);
-//        configuration.setResizable(true);
         configuration.setTransparentFramebuffer(true);
         configuration.setWindowListener(new Lwjgl3WindowAdapter() {
             @Override
@@ -58,7 +54,7 @@ public class Lwjgl3Launcher {
                     try {
                         SystemTray.getSystemTray().add(createTrayIcon());
                     } catch (AWTException e) {
-//                        e.printStackTrace();
+                        e.printStackTrace();
                     }
                 }
             }
