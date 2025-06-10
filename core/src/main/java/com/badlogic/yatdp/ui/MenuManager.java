@@ -53,9 +53,14 @@ public class MenuManager {
         stage.draw();
     }
 
-    public void resize(int width, int height, boolean showMenu) {
+    public void resize(int width, int height, boolean showMenuTable) {
         stage.getViewport().update(width, height, true);
-        if (showMenu) {
+        createMenuUI(showMenuTable);
+    }
+
+    public void createMenuUI(boolean showMenuTable) {
+        stage.clear();
+        if (showMenuTable) {
             createMenuTable();
         } else {
             createContentWindow();
@@ -128,8 +133,10 @@ public class MenuManager {
         closeButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                windowController.expand();
+                // Close this content window
+                MainApp.getInstance().backToMenu();
             }
+
         });
 
         contentWindow.add(contentLabel).expand().fill().pad(10);

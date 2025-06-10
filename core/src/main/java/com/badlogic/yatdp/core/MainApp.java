@@ -24,6 +24,7 @@ import java.util.function.Consumer;
  */
 public class MainApp extends ApplicationAdapter {
 
+    private static MainApp INSTANCE; // 单例
     private final Logger logger = new Logger("YatDP", Logger.DEBUG);
     private AppState appState = AppState.NORMAL;
     private SpinePet pet;
@@ -31,8 +32,14 @@ public class MainApp extends ApplicationAdapter {
     private MenuManager menuManager;
     private YatInputAdapter inputAdapter;
 
+    public static MainApp getInstance() {
+        return INSTANCE;
+    }
+
     @Override
     public void create() {
+        INSTANCE = this; // 初始化单例
+
         ConfigManager config = ConfigManager.loadConfig("config/config.json");
         if (config == null) throw new RuntimeException("Config load failed");
 
@@ -87,8 +94,8 @@ public class MainApp extends ApplicationAdapter {
     public void resize(int width, int height) {
         pet.resize();
         minIcon.resize(width, height);
-        boolean showMenu = appState == AppState.MENU || appState == AppState.FULL_SCREEN;
-        menuManager.resize(width, height, showMenu);
+        boolean showMenuTable = appState == AppState.MENU;
+        menuManager.resize(width, height, showMenuTable);
         logger.info("APP Resized.");
     }
 
@@ -103,17 +110,18 @@ public class MainApp extends ApplicationAdapter {
 
     public void toggleMenuMode() {
         appState = (appState == AppState.NORMAL) ? AppState.MENU : AppState.NORMAL;
+        menuManager.createMenuUI(appState == AppState.MENU);
     }
 
     public void showFullContent(String content) {
         appState = AppState.FULL_SCREEN;
         menuManager.setCurrentContent(content);
-//        menuManager.createMenuUI();
+        menuManager.createMenuUI(false);
     }
 
     public void backToMenu() {
         appState = AppState.MENU;
-//        menuManager.createMenuUI();
+        menuManager.createMenuUI(true);
     }
 
     public AppState getAppState() {

@@ -19,24 +19,29 @@ public class WindowController {
     }
 
     public void minimize() {
-        saveCurrentPosition();
+        Lwjgl3Window window = getWindow();
+        int screenX = window.getPositionX();
+        int screenY = window.getPositionY();
         Gdx.graphics.setWindowedMode(MIN_WIDTH, MIN_HEIGHT);
+        window.setPosition(screenX, screenY);
     }
 
     public void expand() {
-        saveCurrentPosition();
+        Lwjgl3Window window = getWindow();
+        int screenX = window.getPositionX();
+        int screenY = window.getPositionY();
         Gdx.graphics.setWindowedMode(MENU_WIDTH, MENU_HEIGHT);
+        window.setPosition(screenX, screenY);
     }
 
     public void restore() {
+        Lwjgl3Window window = getWindow();
+        int screenX = window.getPositionX();
+        int screenY = window.getPositionY();
         Gdx.graphics.setWindowedMode(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-        getWindow().setPosition((int) lastWindowPosition.x, (int) lastWindowPosition.y);
+        window.setPosition(screenX, screenY);
     }
 
-    private void saveCurrentPosition() {
-        Lwjgl3Window window = getWindow();
-        lastWindowPosition.set(window.getPositionX(), window.getPositionY());
-    }
 
     private Lwjgl3Window getWindow() {
         return ((Lwjgl3Graphics) Gdx.graphics).getWindow();
