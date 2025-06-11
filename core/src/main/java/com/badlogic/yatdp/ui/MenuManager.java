@@ -1,29 +1,27 @@
 package com.badlogic.yatdp.ui;
 
 /* MenuManager目前还存在一个潜在的非预期行为。
-*  当用户点击右键进入菜单，然后点击Minimize按钮将应用缩小，之后再通过
-*  点击右键复原应用 -- 这些都没有问题。
-*  问题在于经过上述操作后，当用户再次点击右键希望进入菜单界面时，
-*  第一次点击是无效的。即需要点两下右键才能重新进入菜单。
-*  暂时还没找到这个问题产生的原因。*/
+ *  当用户点击右键进入菜单，然后点击Minimize按钮将应用缩小，之后再通过
+ *  点击右键复原应用 -- 这些都没有问题。
+ *  问题在于经过上述操作后，当用户再次点击右键希望进入菜单界面时，
+ *  第一次点击是无效的。即需要点两下右键才能重新进入菜单。
+ *  暂时还没找到这个问题产生的原因。*/
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Window;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.Logger;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.yatdp.core.MainApp;
 import com.badlogic.yatdp.input.WindowController;
 
@@ -103,6 +101,7 @@ public class MenuManager {
         this.skin = new Skin(Gdx.files.internal("data/uiskin.json"));
         this.stage = new Stage(new ScreenViewport());
 
+        loadCustomFont();
         createCustomButtonStyle();
     }
 
@@ -150,12 +149,23 @@ public class MenuManager {
         style.up = new TextureRegionDrawable(new TextureRegion(texture));
         style.down = new TextureRegionDrawable(new TextureRegion(texture)).tint(Color.DARK_GRAY);
         style.over = new TextureRegionDrawable(new TextureRegion(texture)).tint(Color.LIGHT_GRAY);
-        style.font = skin.getFont("default-font");
+//        style.font = skin.getFont("default-font");
+        style.font = skin.getFont("custom-font");
         style.fontColor = Color.WHITE;
         style.downFontColor = Color.RED;
         style.overFontColor = Color.YELLOW;
 
         skin.add("custom-button", style, TextButton.TextButtonStyle.class);
+    }
+
+    private void loadCustomFont() {
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(
+            Gdx.files.internal("fonts/MapleMono-NF-CN-Bold.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        BitmapFont customFont = generator.generateFont(parameter);
+        skin.add("custom-font", customFont);
+
+        generator.dispose();
     }
 
     private void createMenuTable() {
@@ -166,8 +176,10 @@ public class MenuManager {
         table.add(createButton("Minimize", windowController::minimize)).width(120).height(40).pad(5);
         table.row();
 
-        table.add(createButton("App Description", () -> onContentRequested.accept(
-            "Here is the program description...\nThis is a desktop pet program, made with LibGDX and Spine animations.")
+        table.add(createButton("About", () -> onContentRequested.accept(
+                "Yet Another Tiny Desktop Pet\n" +
+                    "Right click to restore from minimized."
+            )
         )).width(120).height(40).pad(5);
         table.row();
 
@@ -179,15 +191,25 @@ public class MenuManager {
     private void createContentWindow() {
         stage.clear();
 
-        Window contentWindow = new Window("Content", skin);
+        Window.WindowStyle dialogStyle = skin.get("dialog", Window.WindowStyle.class);
+        dialogStyle.titleFont = skin.getFont("custom-font");
+        dialogStyle.titleFontColor = Color.LIGHT_GRAY;
+
+        Window contentWindow = new Window("About", dialogStyle);
         contentWindow.setSize(300, 150);
         contentWindow.setPosition(0, 0);
         contentWindow.setTouchable(Touchable.enabled);
 
-        Label contentLabel = new Label(currentContent, skin);
-        contentLabel.setWrap(true);
+        Label.LabelStyle labelStyle = new Label.LabelStyle();
+        labelStyle.font = skin.getFont("custom-font");
+        labelStyle.fontColor = Color.LIGHT_GRAY;
 
-        TextButton closeButton = new TextButton("Close", skin, "custom-button");
+        Label contentLabel = new Label(currentContent, labelStyle);
+        contentLabel.setWrap(true);
+        contentLabel.setAlignment(1);
+
+        TextButton closeButton = new TextButton("[Ok]", skin, "custom-button");
+        closeButton.getLabel().setAlignment(1);
         closeButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
