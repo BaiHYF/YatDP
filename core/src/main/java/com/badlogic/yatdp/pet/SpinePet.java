@@ -58,8 +58,9 @@ import java.util.List;
  *
  * <h3>动画控制说明</h3>
  * <ul>
- *   <li>默认动画：Relax</li>
- *   <li>点击触发：Interact</li>
+ *   <li>默认动画：DEFAULT_ANIMATION</li>
+ *   <li>点击触发：CLICKED_ANIMATION</li>
+ *   <li>闲置一定时间自动触发: IDLE_ANIMATION</>
  *   <li>所有动画之间使用 0.1s 混合过渡</li>
  *   <li>点击动画播放完毕后自动切换回默认动画</li>
  * </ul>
@@ -77,6 +78,11 @@ import java.util.List;
  *   <li>点击触发交互行为</li>
  * </ul>
  *
+ * <h3>优化方向</>
+ * <ul>
+ *   <li>动画相关设置放在配置文件中读取，不使用Hard Code</>
+ * </ul>
+ *
  * @author baiheyufei
  * @version 1.0
  * @see #SpinePet(String, String)
@@ -87,8 +93,10 @@ import java.util.List;
 public class SpinePet {
     private static final Logger logger = new Logger("SpinePet", Logger.DEBUG);
     private static final float MODEL_SCALE = 0.3f;
+    private static final float IDLE_TRIGGER_TIME_SECONDS = 60.f;
     private static final String DEFAULT_ANIMATION = "Relax";
     private static final String CLICKED_ANIMATION = "Interact";
+    private static final String IDLE_ANIMATION = "Sleep";
     private static final String CLICK_SOUND_PATH = "sounds/mixkit-magic-notification-ring-2344.mp3";
 
     private final OrthographicCamera camera = new OrthographicCamera();
@@ -100,6 +108,7 @@ public class SpinePet {
     private AnimationStateData animationStateData;
     private boolean isPlayingSpecialAnimation = false;
     private Sound clickSound;
+    private float idleTime = 0.0f;
 
     /**
      * 构造函数，初始化 Spine 模型和渲染组件
@@ -128,6 +137,17 @@ public class SpinePet {
         updateSkeletonPosition();
         updateAnimation(delta);
 
+        if (animationState.getCurrent(0).getAnimation().getName().equals(DEFAULT_ANIMATION)) {
+            idleTime += delta;
+        } else {
+            idleTime = 0.0f;
+        }
+
+        if (idleTime > IDLE_TRIGGER_TIME_SECONDS) {
+            playIdleTimeoutAnimation();
+            idleTime = 0.0f;
+        }
+
         camera.update();
         batch.setProjectionMatrix(camera.combined);
 
@@ -142,7 +162,6 @@ public class SpinePet {
      * <p>在程序退出时调用以避免内存泄漏</p>
      */
     public void dispose() {
-//        atlas.dispose();
         batch.dispose();
         if (clickSound != null) {
             clickSound.dispose();
@@ -156,6 +175,7 @@ public class SpinePet {
     public void onClicked() {
         if (isPlayingSpecialAnimation) return;
 
+        idleTime = 0.0f;
         isPlayingSpecialAnimation = true;
         logger.info("Clicked: playing animation and sound.");
 
@@ -206,6 +226,7 @@ public class SpinePet {
         Array<Animation> animations = skeleton.getData().getAnimations();
         List<Animation> animationList = new ArrayList<>();
         for (Animation animation : animations) {
+            logger.info("Init animation: " + animation.getName());
             animationList.add(animation);
         }
 
@@ -226,6 +247,14 @@ public class SpinePet {
         animationState.apply(skeleton);
         skeleton.update(delta);
         skeleton.updateWorldTransform();
+    }
+
+    private void playIdleTimeoutAnimation() {
+        animationState.setAnimation(0, IDLE_ANIMATION, false);
+        for (int i = 0; i < 5; i++) {
+            animationState.addAnimation(0, IDLE_ANIMATION, false, 0f);
+        }
+        animationState.addAnimation(0, DEFAULT_ANIMATION, true, 0f);
     }
 
     private void loadSoundEffect() {
