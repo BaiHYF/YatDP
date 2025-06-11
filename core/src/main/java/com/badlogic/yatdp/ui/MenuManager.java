@@ -29,6 +29,59 @@ import com.badlogic.yatdp.input.WindowController;
 
 import java.util.function.Consumer;
 
+/**
+ * MenuManager 负责管理桌宠程序 YatDP 的菜单界面与内容展示，
+ * 提供最小化、应用说明与退出等交互选项，并在菜单与内容窗口之间进行切换。
+ * 该类基于 LibGDX Scene2D UI 构建，封装了菜单 UI 的渲染与响应逻辑。
+ *
+ * <h3>功能概述</h3>
+ * <ul>
+ *     <li><b>render()</b>：调用 {@link Stage} 渲染 UI</li>
+ *     <li><b>resize()</b>：窗口尺寸变更时重建 UI 元素</li>
+ *     <li><b>createMenuUI()</b>：创建菜单或内容窗口</li>
+ *     <li><b>dispose()</b>：释放 UI 资源</li>
+ * </ul>
+ *
+ * <h3>交互行为</h3>
+ * <ul>
+ *     <li>点击「Minimize」按钮触发 {@link WindowController#minimize()}</li>
+ *     <li>点击「App Description」触发自定义回调 {@code onContentRequested}</li>
+ *     <li>点击「Exit」执行传入的 {@code onExit} 回调</li>
+ *     <li>点击「Close」按钮调用 {@link MainApp#backToMenu()}</li>
+ * </ul>
+ *
+ * <h3>模块协作结构</h3>
+ * <pre>
+ * MenuManager
+ * ├── 控制 UI 渲染：Stage + Table + Window
+ * ├── 调用 WindowController 进行窗口缩放
+ * ├── 通过 Consumer<String> 提供内容展示回调
+ * └── 与 MainApp、YatInputAdapter 配合进行状态切换
+ * </pre>
+ *
+ * <h3>状态控制示意</h3>
+ * <pre>
+ * [ MENU ] ← backToMenu ← [ FULL_SCREEN ]
+ *     ↑                     ↓
+ *    toggle → [ NORMAL ] → minimize
+ * </pre>
+ *
+ * <h3>已知问题</h3>
+ * <blockquote>
+ * 存在一个潜在 Bug：当用户右键打开菜单 → 点击「Minimize」→ 再次右键恢复时，
+ * 再次尝试右键进入菜单会失效一次（需要点击两次），原因尚未定位。
+ * </blockquote>
+ *
+ * <h3>注意事项</h3>
+ * <ul>
+ *     <li>所有 UI 绘制基于 {@link com.badlogic.gdx.scenes.scene2d.Stage}，需在主渲染线程调用</li>
+ *     <li>按钮样式通过 Pixmap 创建灰色背景并注册为 "custom-button"</li>
+ *     <li>文本内容展示通过 Label 实现自动换行</li>
+ * </ul>
+ *
+ * @author baiheyufei
+ * @version 1.1
+ */
 public class MenuManager {
     private static final Logger logger = new Logger("MenuManager", Logger.DEBUG);
 

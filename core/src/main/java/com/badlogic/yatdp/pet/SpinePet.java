@@ -16,33 +16,72 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 封装桌面宠物中 Spine 模型与动画的相关操作。
- *
- * <p>{@code SpinePet} 类旨在对 Spine 模型的加载、渲染、动画控制等功能进行封装，
- * 提供简洁且统一的接口供桌宠应用程序调用。通过此类，可以轻松集成和管理桌面宠物的外观及行为。</p>
+ * SpinePet 类封装了桌面宠物的 Spine 模型、动画控制与交互逻辑。
+ * <p>
+ * 该类负责加载 Spine 模型资源、控制动画播放、处理用户点击事件，以及完成模型的实时渲染。
+ * 它构成桌宠外观与行为的核心表现层，结合 Spine Runtime 实现动态骨骼动画效果。
  *
  * <h3>主要功能</h3>
  * <ul>
- *     <li>加载 Spine 模型资源（支持 `.skel` 二进制格式）</li>
- *     <li>更新模型状态并渲染到桌面</li>
- *     <li>提供资源释放接口防止内存泄漏</li>
+ *   <li>加载指定路径的 Spine 模型（支持二进制 .skel 与 .atlas 格式）</li>
+ *   <li>初始化并管理骨骼动画系统</li>
+ *   <li>根据程序状态动态调整模型位置（如在菜单模式中左移）</li>
+ *   <li>支持用户点击交互：触发互动动画与音效播放</li>
+ *   <li>自动处理动画混合，增强自然切换效果</li>
+ *   <li>提供资源释放方法，防止内存泄漏</li>
  * </ul>
  *
- * <h3>典型用法</h3>
+ * <h3>模块协作结构</h3>
  * <pre>
- * // 初始化
- * SpinePet pet = new SpinePet("models", "cat");
- *
- * // 在 render() 方法中更新和渲染
- * pet.render(Gdx.graphics.getDeltaTime());
- *
- * // 程序退出时释放资源
- * pet.dispose();
+ * MainApp
+ *  └── SpinePet
+ *        ├── Skeleton / AnimationState        // 动画控制核心
+ *        ├── TwoColorPolygonBatch             // 渲染器
+ *        ├── OrthographicCamera               // 视图控制
+ *        └── Sound clickSound                 // 交互音效
  * </pre>
  *
- * @author baiheyufei <BaiHeYuFei@outlook.com>
+ * <h3>典型用法</h3>
+ * <pre>{@code
+ * // 初始化宠物模型（指定模型目录与模型名）
+ * SpinePet pet = new SpinePet("models", "cat");
+ *
+ * // 每帧调用渲染
+ * pet.render(Gdx.graphics.getDeltaTime());
+ *
+ * // 用户点击事件触发动画与声音
+ * pet.onClicked();
+ *
+ * // 应用关闭时释放资源
+ * pet.dispose();
+ * }</pre>
+ *
+ * <h3>动画控制说明</h3>
+ * <ul>
+ *   <li>默认动画：Relax</li>
+ *   <li>点击触发：Interact</li>
+ *   <li>所有动画之间使用 0.1s 混合过渡</li>
+ *   <li>点击动画播放完毕后自动切换回默认动画</li>
+ * </ul>
+ *
+ * <h3>注意事项</h3>
+ * <ul>
+ *   <li>模型资源应包含一致命名的 `.atlas`, `.skel`, `.png` 文件</li>
+ *   <li>模型缩放比设定为 {@code 0.3f}，请根据分辨率合理调整</li>
+ *   <li>动画文件中需包含名为 "Relax" 与 "Interact" 的动作</li>
+ * </ul>
+ *
+ * <h3>日志输出</h3>
+ * <ul>
+ *   <li>Spine 模型加载完成</li>
+ *   <li>点击触发交互行为</li>
+ * </ul>
+ *
+ * @author baiheyufei
+ * @version 1.0
  * @see #SpinePet(String, String)
  * @see #render(float)
+ * @see #onClicked()
  * @see #dispose()
  */
 public class SpinePet {

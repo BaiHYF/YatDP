@@ -15,11 +15,48 @@ import java.util.function.Consumer;
 
 
 /**
- * Main 类是 YatDP 程序的核心入口，继承自 LibGDX 的 `ApplicationAdapter`。
- * 负责初始化应用核心组件、处理渲染循环及资源管理。
+ * MainApp 是桌宠程序 YatDP 的核心类，负责应用生命周期的管理与组件初始化。
+ * 该类继承自 LibGDX 的 {@link ApplicationAdapter}，在桌面运行时会自动被调用。
  *
- * @author baiheyufei <BaiHeYuFei@outlook.com>
- * @version 1.0
+ * <p>主要职责包括：</p>
+ * <ul>
+ *     <li>初始化桌宠模型（SpinePet）、菜单（MenuManager）、最小化图标（MinIcon）等核心组件</li>
+ *     <li>管理不同应用状态（普通、菜单、全屏）之间的切换</li>
+ *     <li>统一处理渲染循环、屏幕尺寸变化和资源释放</li>
+ * </ul>
+ *
+ * <h3>模块结构</h3>
+ * <pre>
+ * MainApp
+ * ├── SpinePet         // 动画模型：负责桌宠的 Spine 渲染与交互动画
+ * ├── MenuManager      // 菜单交互管理器：右键菜单、内容展示、UI 切换等
+ * ├── MinIcon          // 最小化图标：托盘图标或窗口缩小时的展示元素
+ * ├── YatInputAdapter  // 输入处理器：统一接收鼠标点击、拖拽、快捷键输入等
+ * └── WindowController // 窗口控制器：控制窗口的移动、最小化、恢复等行为
+ * </pre>
+ *
+ * <h3>状态控制逻辑</h3>
+ * 应用通过 {@link AppState} 枚举维护 UI 状态，状态转换如下：
+ * <pre>
+ * [ NORMAL ] ← toggleMenuMode() → [ MENU ] ← backToMenu() ← [ FULL_SCREEN ]
+ * </pre>
+ *
+ * <h3>外部调用接口</h3>
+ * <ul>
+ *     <li>{@link #toggleMenuMode()} 切换菜单显示/隐藏</li>
+ *     <li>{@link #showFullContent(String)} 显示全屏内容</li>
+ *     <li>{@link #backToMenu()} 返回菜单主界面</li>
+ *     <li>{@link #getAppState()} 获取当前状态</li>
+ * </ul>
+ *
+ * <p>该类设计为单例，外部模块可通过 {@link #getInstance()} 访问其全局实例。</p>
+ *
+ * @author baiheyufei
+ * @version 1.1
+ * @see com.badlogic.yatdp.pet.SpinePet
+ * @see com.badlogic.yatdp.ui.MenuManager
+ * @see com.badlogic.yatdp.ui.MinIcon
+ * @see com.badlogic.yatdp.input.YatInputAdapter
  */
 public class MainApp extends ApplicationAdapter {
 
@@ -115,12 +152,20 @@ public class MainApp extends ApplicationAdapter {
         menuManager.createMenuUI(appState == AppState.MENU);
     }
 
+    /**
+     * 显示完整文本内容（如“程序说明”），进入 FULL_SCREEN 模式。
+     *
+     * @param content 要展示的完整文本
+     */
     public void showFullContent(String content) {
         appState = AppState.FULL_SCREEN;
         menuManager.setCurrentContent(content);
         menuManager.createMenuUI(false);
     }
 
+    /**
+     * 从 FULL_SCREEN 返回菜单界面。
+     */
     public void backToMenu() {
         appState = AppState.MENU;
         menuManager.createMenuUI(true);
