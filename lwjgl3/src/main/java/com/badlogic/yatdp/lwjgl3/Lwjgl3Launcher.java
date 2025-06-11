@@ -5,7 +5,7 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Window;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3WindowAdapter;
-import com.badlogic.yatdp.Main;
+import com.badlogic.yatdp.core.MainApp;
 import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
@@ -21,7 +21,7 @@ public class Lwjgl3Launcher {
     }
 
     private static void createApplication() {
-        new Lwjgl3Application(new Main(), getDefaultConfiguration());
+        new Lwjgl3Application(new MainApp(), getDefaultConfiguration());
     }
 
     private static Lwjgl3ApplicationConfiguration getDefaultConfiguration() {
@@ -37,14 +37,12 @@ public class Lwjgl3Launcher {
         //// useful for testing performance, but can also be very stressful to some hardware.
         //// You may also need to configure GPU drivers to fully disable Vsync; this can cause screen tearing.
 
-        configuration.setWindowedMode(640, 480);
+        configuration.setWindowedMode(150, 150);
         //// You can change these files; they are in lwjgl3/src/main/resources/ .
         //// They can also be loaded from the root of assets/ .
         configuration.setWindowIcon("赤色のチューリップx128.png", "赤色のチューリップx64.png", "赤色のチューリップx32.png", "赤色のチューリップx16.png");
-        configuration.setWindowedMode(150, 150);
         configuration.setWindowPosition(0, 50);   // TO BE SET IN CONFIG
         configuration.setDecorated(false);
-        configuration.setResizable(true);
         configuration.setTransparentFramebuffer(true);
         configuration.setWindowListener(new Lwjgl3WindowAdapter() {
             @Override
@@ -56,7 +54,7 @@ public class Lwjgl3Launcher {
                     try {
                         SystemTray.getSystemTray().add(createTrayIcon());
                     } catch (AWTException e) {
-//                        e.printStackTrace();
+                        e.printStackTrace();
                     }
                 }
             }
