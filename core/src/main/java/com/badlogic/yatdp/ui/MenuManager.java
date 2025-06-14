@@ -1,12 +1,5 @@
 package com.badlogic.yatdp.ui;
 
-/* MenuManager目前还存在一个潜在的非预期行为。
- *  当用户点击右键进入菜单，然后点击Minimize按钮将应用缩小，之后再通过
- *  点击右键复原应用 -- 这些都没有问题。
- *  问题在于经过上述操作后，当用户再次点击右键希望进入菜单界面时，
- *  第一次点击是无效的。即需要点两下右键才能重新进入菜单。
- *  暂时还没找到这个问题产生的原因。*/
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -64,11 +57,6 @@ import java.util.function.Consumer;
  *    toggle → [ NORMAL ] → minimize
  * </pre>
  *
- * <h3>已知问题</h3>
- * <blockquote>
- * 存在一个潜在 Bug：当用户右键打开菜单 → 点击「Minimize」→ 再次右键恢复时，
- * 再次尝试右键进入菜单会失效一次（需要点击两次），原因尚未定位。
- * </blockquote>
  *
  * <h3>注意事项</h3>
  * <ul>
