@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.yatdp.core.MainApp;
@@ -202,6 +203,7 @@ public class MenuManager {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 // Close this content window
+                logger.info("content");
                 MainApp.getInstance().backToMenu();
             }
 
@@ -212,6 +214,42 @@ public class MenuManager {
         contentWindow.add(closeButton).padBottom(10);
 
         stage.addActor(contentWindow);
+    }
+
+    public void createBreakReminderUI() {
+        stage.clear();
+
+        Window.WindowStyle dialogStyle = skin.get("dialog", Window.WindowStyle.class);
+        dialogStyle.titleFont = skin.getFont("custom-font");
+        dialogStyle.titleFontColor = Color.LIGHT_GRAY;
+
+        Window breakWindow = new Window("Reminder", dialogStyle);
+        breakWindow.setSize(150, 150);
+        breakWindow.setPosition(0, 0);
+        breakWindow.setTouchable(Touchable.enabled);
+
+        Label.LabelStyle labelStyle = new Label.LabelStyle();
+        labelStyle.font = skin.getFont("custom-font");
+        labelStyle.fontColor = Color.LIGHT_GRAY;
+
+        Label reminderLabel = new Label("Please take a break", labelStyle);
+        reminderLabel.setWrap(true);
+        reminderLabel.setAlignment(Align.center);
+
+        TextButton okButton = new TextButton("OK", skin, "custom-button");
+        okButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                logger.info("back");
+                MainApp.getInstance().backToNormalFromBreak();
+            }
+        });
+
+        breakWindow.add(reminderLabel).expand().fill().pad(10);
+        breakWindow.row();
+        breakWindow.add(okButton).padBottom(10);
+
+        stage.addActor(breakWindow);
     }
 
     private TextButton createButton(String text, Runnable action) {

@@ -68,6 +68,10 @@ public class MainApp extends ApplicationAdapter {
     private MenuManager menuManager;
     private YatInputAdapter inputAdapter;
 
+    private float runTime = 0f;
+
+    private static final float BREAK_REMINDER_TIME = 10f; // 2分钟 = 120秒
+
     public static MainApp getInstance() {
         return INSTANCE;
     }
@@ -109,6 +113,11 @@ public class MainApp extends ApplicationAdapter {
         }
 
         float delta = Gdx.graphics.getDeltaTime();
+
+        // 更新运行时间
+        runTime += delta;
+        checkBreakReminder();
+
         switch (appState) {
             case NORMAL:
                 pet.render(delta);
@@ -120,8 +129,34 @@ public class MainApp extends ApplicationAdapter {
             case FULL_SCREEN:
                 menuManager.render();
                 break;
+            case BREAK_REMINDER:  // 新增状态处理
+                renderBreakReminder();
+                break;
         }
 
+    }
+
+    private void checkBreakReminder() {
+        if (runTime >= BREAK_REMINDER_TIME && appState != AppState.BREAK_REMINDER) {
+            showBreakReminder();
+        }
+    }
+
+    private void showBreakReminder() {
+        appState = AppState.BREAK_REMINDER;
+        // 重置计时，避免重复提醒
+        runTime = 0f;
+    }
+
+    private void renderBreakReminder() {
+        // 使用MenuManager的stage来渲染休息提醒界面
+        menuManager.createBreakReminderUI();
+        menuManager.render();
+    }
+
+    public void backToNormalFromBreak() {
+        appState = AppState.NORMAL;
+        menuManager.createMenuUI(false);
     }
 
     private void clearScreen() {

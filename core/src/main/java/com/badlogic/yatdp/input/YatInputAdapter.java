@@ -4,6 +4,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Logger;
+import com.badlogic.yatdp.core.AppState;
 import com.badlogic.yatdp.pet.SpinePet;
 import com.badlogic.yatdp.core.MainApp;
 
@@ -87,6 +88,7 @@ public class YatInputAdapter extends InputAdapter {
 
     @Override
     public boolean touchDown(int x, int y, int pointer, int button) {
+
         if (button == Input.Buttons.LEFT) {
             mouseDownPos.set(x, y);
             isLeftPressed = true;
@@ -101,6 +103,10 @@ public class YatInputAdapter extends InputAdapter {
 
     @Override
     public boolean touchUp(int x, int y, int pointer, int button) {
+        if (app.getAppState() == AppState.BREAK_REMINDER) {
+            return false;
+        }
+
         if (button == Input.Buttons.LEFT) {
             isLeftPressed = false;
             if (!isDragging) pet.onClicked();
