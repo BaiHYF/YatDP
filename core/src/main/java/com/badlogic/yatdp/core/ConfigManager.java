@@ -11,9 +11,9 @@ import com.badlogic.gdx.utils.XmlReader;
  * 支持 JSON (*.json) 和 XML (*.xml) 两种格式。
  *
  * <p>配置文件包含系统初始化所需的各种参数，例如：
- * Spine 模型所在目录（modelDirPath）、模型文件名（modelName）、默认窗口尺寸、
- * 图标路径、默认动画名称以及点击后的动画名称等。将这些参数外部化，
- * 可以提高系统的灵活性与可维护性。</p>
+ *  * Spine 模型所在目录（modelDirPath）、模型文件名（modelName）、默认窗口尺寸、
+ *  * 图标路径、默认动画名称以及点击后的动画名称等。将这些参数外部化，
+ *  * 可以提高系统的灵活性与可维护性。</p>
  *
  * <p>示例用法：</p>
  * <pre>
